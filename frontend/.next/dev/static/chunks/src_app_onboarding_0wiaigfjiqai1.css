@@ -1,0 +1,219 @@
+/* [project]/src/app/onboarding.css [app-client] (css) */
+.adaptive-onboarding {
+  border: 1px solid var(--ad-border);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+  padding: clamp(18px, 4vw, 40px);
+}
+
+.adaptive-onboarding-header {
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  display: flex;
+}
+
+.adaptive-onboarding-brand {
+  align-items: center;
+  gap: 12px;
+  display: flex;
+}
+
+.adaptive-onboarding-logo {
+  background: var(--ad-accent);
+  width: 48px;
+  height: 48px;
+  color: var(--ad-on-accent);
+  border-radius: 14px;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.adaptive-onboarding-progress {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-block: 28px;
+  display: grid;
+}
+
+.adaptive-onboarding-progress span {
+  background: var(--ad-border);
+  border-radius: 999px;
+  height: 5px;
+  transition: background-color .2s;
+}
+
+.adaptive-onboarding-progress span[data-active="true"] {
+  background: var(--ad-accent);
+}
+
+.adaptive-onboarding-content {
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+  display: flex;
+}
+
+.adaptive-onboarding-illustration {
+  width: 100%;
+  max-width: 300px;
+  margin-inline: auto;
+}
+
+.adaptive-onboarding-illustration svg {
+  width: 100%;
+  height: auto;
+}
+
+.adaptive-onboarding-center {
+  text-align: center;
+}
+
+.adaptive-onboarding-feature {
+  background: var(--ad-surface);
+  border: 1px solid var(--ad-border);
+  border-radius: 16px;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  display: flex;
+}
+
+.adaptive-onboarding-feature svg {
+  color: var(--ad-accent);
+  flex-shrink: 0;
+}
+
+.adaptive-onboarding-option {
+  background: var(--ad-surface);
+  width: 100%;
+  min-height: 100px;
+  color: var(--ad-text);
+  border: 2px solid var(--ad-border);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 20px;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  font-size: 1em;
+  display: flex;
+}
+
+.adaptive-onboarding-option[aria-pressed="true"] {
+  border-color: var(--ad-accent);
+  background: var(--ad-surface-secondary);
+}
+
+.adaptive-onboarding-option:hover {
+  background: var(--ad-surface-hover);
+}
+
+.adaptive-onboarding-theme-preview {
+  text-align: left;
+  border-radius: 12px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  display: flex;
+}
+
+.adaptive-onboarding-theme-preview.light {
+  color: #172923;
+  background: #f3f5f5;
+  border: 1px solid #dce5e0;
+}
+
+.adaptive-onboarding-theme-preview.dark {
+  color: #f0f5f3;
+  background: #111619;
+  border: 1px solid #354440;
+}
+
+.adaptive-onboarding-actions {
+  border-top: 1px solid var(--ad-border);
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  display: flex;
+}
+
+.adaptive-onboarding-next {
+  flex: 1;
+  min-height: 56px;
+}
+
+.adaptive-onboarding-success {
+  background: var(--ad-success-bg);
+  width: 100px;
+  height: 100px;
+  color: var(--ad-success);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  margin-inline: auto;
+  display: flex;
+}
+
+@keyframes adaptive-onboarding-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.adaptive-onboarding-enter {
+  animation: .25s ease-out adaptive-onboarding-enter;
+}
+
+@media (max-width: 640px) {
+  .adaptive-onboarding {
+    border-radius: 20px;
+    padding: 18px;
+  }
+
+  .adaptive-onboarding-option {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .adaptive-onboarding-content {
+    gap: 18px;
+  }
+
+  .adaptive-onboarding-theme-preview {
+    min-height: 100px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .adaptive-onboarding-actions .adaptive-button {
+    min-height: 52px;
+  }
+
+  .adaptive-onboarding-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adaptive-onboarding-enter {
+    animation: none;
+  }
+}
+
+/*# sourceMappingURL=src_app_onboarding_0wiaigfjiqai1.css.map*/

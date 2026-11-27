@@ -1,0 +1,116 @@
+/* [project]/src/app/wallet-connection.css [app-client] (css) */
+.av-wallet-card {
+  min-width: 0;
+  scroll-margin-top: 100px;
+}
+
+.av-wallet-card .adaptive-status > div {
+  min-width: 0;
+}
+
+.av-wallet-address {
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  margin-top: .5em;
+  font-size: .85em;
+  display: block;
+}
+
+.av-wallet-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  display: grid;
+}
+
+.av-wallet-options button {
+  text-align: left;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.av-wallet-mark {
+  color: #fff;
+  border-radius: 10px;
+  flex: none;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  font-weight: 700;
+  display: inline-flex;
+}
+
+.av-wallet-phantom {
+  background: #6145ad;
+}
+
+.av-wallet-solflare {
+  background: #9a4800;
+}
+
+.av-wallet-card a {
+  color: var(--ad-accent);
+  text-decoration: underline;
+}
+
+.av-wallet-card a svg {
+  vertical-align: middle;
+  display: inline;
+}
+
+.av-wallet-card button:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+.av-wallet-header-link {
+  border: 1px solid var(--ad-border);
+  min-height: 44px;
+  color: var(--ad-text);
+  white-space: nowrap;
+  border-radius: 12px;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: .85em;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+}
+
+.av-wallet-header-link svg {
+  color: var(--ad-accent);
+  flex: none;
+}
+
+@media (max-width: 700px) {
+  .av-wallet-options {
+    grid-template-columns: 1fr;
+  }
+
+  .av-wallet-header-link span {
+    display: none;
+  }
+
+  .av-wallet-header-link {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 380px) {
+  .av-wallet-header-link {
+    display: none;
+  }
+}
+
+[data-large-text="true"] .av-wallet-options {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 1000px) {
+  [data-large-text="true"] .av-wallet-header-link span {
+    display: none;
+  }
+}
+
+/*# sourceMappingURL=src_app_wallet-connection_css_1igg3k2-ikub5._.single.css.map*/

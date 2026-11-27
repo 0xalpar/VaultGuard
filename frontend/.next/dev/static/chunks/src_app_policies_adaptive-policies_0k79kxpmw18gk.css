@@ -1,0 +1,85 @@
+/* [project]/src/app/policies/adaptive-policies.css [app-client] (css) */
+.adaptive-policies {
+  width: 100%;
+  min-width: 0;
+  max-width: 1320px;
+  color: var(--ad-text);
+  background: var(--ad-background);
+  gap: 24px;
+  margin-inline: auto;
+}
+
+.adaptive-policies .adaptive-card {
+  background: var(--ad-surface);
+  color: var(--ad-text);
+}
+
+.adaptive-policies h1, .adaptive-policies h2 {
+  color: var(--ad-text);
+}
+
+.adaptive-policies .policy-hero {
+  text-align: center;
+  background: var(--ad-success-bg);
+  color: var(--ad-success);
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 36px 20px;
+  display: flex;
+}
+
+.adaptive-policies .policy-hero[data-stopped="true"] {
+  background: var(--ad-danger-bg);
+  color: var(--ad-danger);
+}
+
+.policy-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+  display: grid;
+}
+
+.policy-address {
+  overflow-wrap: anywhere;
+  font-size: .9em;
+}
+
+.adaptive-policies .adaptive-input {
+  width: 100%;
+  min-width: 0;
+}
+
+.adaptive-root[data-large-text="true"] .policy-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 900px) {
+  .policy-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .adaptive-policies .adaptive-button {
+    width: 100%;
+  }
+}
+
+.adaptive-policies textarea {
+  resize: vertical;
+  font: inherit;
+  padding: 12px;
+}
+
+.policy-grid .policy-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.adaptive-policies .policy-grid > * {
+  min-width: 0;
+}
+
+/*# sourceMappingURL=src_app_policies_adaptive-policies_0k79kxpmw18gk.css.map*/

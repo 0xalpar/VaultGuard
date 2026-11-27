@@ -1,0 +1,178 @@
+/* [project]/src/app/settings/adaptive-settings.css [app-client] (css) */
+.adaptive-settings {
+  width: 100%;
+  max-width: 1100px;
+  color: var(--ad-text);
+  background: var(--ad-background);
+  gap: 24px;
+  margin-inline: auto;
+}
+
+.adaptive-settings .adaptive-card {
+  color: var(--ad-text);
+  background: var(--ad-surface);
+}
+
+.adaptive-settings h1, .adaptive-settings h2, .adaptive-settings strong {
+  color: var(--ad-text);
+}
+
+.adaptive-settings .adaptive-small, .adaptive-settings .adaptive-description, .adaptive-settings .adaptive-label {
+  color: var(--ad-muted);
+}
+
+.settings-options {
+  gap: 12px;
+  display: grid;
+}
+
+.settings-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  display: grid;
+}
+
+.settings-option {
+  text-align: left;
+  min-width: 0;
+  min-height: 64px;
+  font: inherit;
+  color: var(--ad-text);
+  background: var(--ad-surface);
+  border: 2px solid var(--ad-border);
+  border-radius: var(--ad-radius-medium, 18px);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  display: flex;
+}
+
+.settings-option > span:first-child {
+  min-width: 0;
+}
+
+.settings-option .adaptive-small {
+  margin-top: 4px;
+  display: block;
+}
+
+.settings-option svg {
+  color: var(--ad-accent);
+  flex-shrink: 0;
+}
+
+.settings-option[aria-pressed="true"] {
+  border-color: var(--ad-accent);
+  background: var(--ad-surface-secondary);
+}
+
+.settings-option:hover {
+  background: var(--ad-surface-hover);
+}
+
+.settings-theme, .settings-color {
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.settings-theme-preview {
+  background: #eaf0ed;
+  border-radius: 12px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 86px;
+  padding: 12px;
+  display: flex;
+}
+
+.settings-theme-preview[data-preview="dark"] {
+  background: #111619;
+}
+
+.settings-theme-preview[data-preview="system"] {
+  background: linear-gradient(110deg, #eaf0ed 50%, #111619 50%);
+}
+
+.settings-theme-preview svg {
+  color: #21664d;
+}
+
+.settings-theme-preview[data-preview="dark"] svg, .settings-theme-preview[data-preview="system"] svg {
+  color: #80eac0;
+}
+
+.settings-theme-preview span {
+  background: #83bba2;
+  border-radius: 8px;
+  width: 80%;
+  height: 8px;
+}
+
+.settings-theme-preview span:last-child {
+  width: 50%;
+}
+
+.settings-swatch {
+  border-radius: 50%;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  display: grid;
+}
+
+.settings-swatch svg {
+  color: #fff;
+}
+
+.settings-toggle {
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 56px;
+  display: flex;
+}
+
+.settings-toggle .adaptive-small {
+  margin-top: 4px;
+  display: block;
+}
+
+.settings-toggle input {
+  width: 24px;
+  height: 24px;
+  accent-color: var(--ad-accent);
+  flex-shrink: 0;
+}
+
+.adaptive-settings .adaptive-balance {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-option {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adaptive-root[data-large-text="true"] .settings-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+/*# sourceMappingURL=src_app_settings_adaptive-settings_1cld2-y_wruc3.css.map*/

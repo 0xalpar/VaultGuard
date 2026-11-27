@@ -1,0 +1,161 @@
+/* [project]/src/app/transactions/adaptive-transactions.css [app-client] (css) */
+.adaptive-transactions {
+  width: 100%;
+  min-width: 0;
+  max-width: 1320px;
+  color: var(--ad-text);
+  background: var(--ad-background);
+  gap: 24px;
+  margin-inline: auto;
+}
+
+.adaptive-transactions .adaptive-card {
+  background: var(--ad-surface);
+  color: var(--ad-text);
+}
+
+.adaptive-transactions h1, .adaptive-transactions h2, .adaptive-transactions strong {
+  color: var(--ad-text);
+}
+
+.tx-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  display: grid;
+}
+
+.tx-total {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.tx-track {
+  background: var(--ad-surface-secondary);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.tx-track > div {
+  background: var(--ad-accent);
+  border-radius: 999px;
+  height: 100%;
+}
+
+.tx-row {
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
+  align-items: center;
+  gap: 16px;
+  display: flex;
+}
+
+.tx-row:hover {
+  border-color: var(--ad-accent);
+}
+
+.tx-row .adaptive-icon-box {
+  flex-shrink: 0;
+}
+
+.tx-info, .tx-value {
+  overflow-wrap: anywhere;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  display: flex;
+}
+
+.tx-info {
+  flex: 1;
+}
+
+.tx-value {
+  text-align: right;
+}
+
+.tx-status {
+  color: var(--ad-success);
+  font-size: .85em;
+  font-weight: 600;
+}
+
+.tx-status[data-status="Engellendi"] {
+  color: var(--ad-danger);
+}
+
+.tx-status[data-status="Bekliyor"] {
+  color: var(--ad-warning);
+}
+
+.tx-dialog {
+  border: 1px solid var(--ad-border);
+  background: var(--ad-surface);
+  width: min(540px, 100% - 32px);
+  max-height: 85dvh;
+  color: var(--ad-text);
+  font: inherit;
+  border-radius: 24px;
+  margin: auto;
+  padding: 24px;
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+}
+
+.tx-dialog::backdrop {
+  background: #0000008c;
+}
+
+.adaptive-transactions input, .adaptive-transactions select {
+  min-width: 0;
+  max-width: 100%;
+  color: var(--ad-text);
+  background: var(--ad-surface);
+}
+
+.adaptive-transactions button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .tx-row {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .tx-value {
+    text-align: left;
+    flex-basis: 100%;
+    padding-left: 0;
+  }
+
+  .tx-total {
+    font-size: 1.35em;
+  }
+
+  .tx-summary {
+    gap: 10px;
+  }
+
+  .adaptive-transactions {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tx-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+.adaptive-root[data-large-text="true"] .tx-summary {
+  grid-template-columns: 1fr;
+}
+
+/*# sourceMappingURL=src_app_transactions_adaptive-transactions_1-8ik6gur9676.css.map*/
