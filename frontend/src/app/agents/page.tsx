@@ -429,7 +429,7 @@ export default function AgentsPage() {
 
               <p className="adaptive-small" style={{overflowWrap:"anywhere"}}>AgentID: {agent.id}</p>
               <p className="adaptive-small" style={{overflowWrap:"anywhere"}}>Örnek imzacı: {agent.publicKey}</p>
-              <p className={agent.violations>=5?"adaptive-status adaptive-status-danger":"adaptive-small"}>Yetki ihlalleri: {agent.violations}/5 · Gerçek imza doğrulanmıyor</p>
+              <p className={agent.violations>=1?"adaptive-status adaptive-status-danger":"adaptive-small"}>Yetki ihlalleri: {agent.violations}/1 · Gerçek imza doğrulanmıyor</p>
               <div className="adaptive-divider" />
               {/* DAILY SPENDING */}
 

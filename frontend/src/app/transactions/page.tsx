@@ -7,7 +7,7 @@ import {useDemoVault} from "../../components/DemoVaultProvider";
 import {recordsFor,type DemoRecord} from "../../lib/demo-vault";
 
 type Transaction = DemoRecord;
-const statuses = ["Tümü", "Tamamlandı", "Engellendi"] as const;
+const statuses = ["Tümü", "Tamamlandı", "Engellendi", "Onay bekliyor"] as const;
 const money = (cents:number) => (Math.abs(cents)/100).toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const dateLabel = (date:string) => `${date.slice(8,10)}.${date.slice(5,7)}.${date.slice(0,4)} · ${date.slice(11,16)}`;
 export default function TransactionsPage(){

@@ -21,7 +21,6 @@ type Props = {
   balance: number;
   available: number;
   hidden: boolean;
-  frozen?: boolean;
   onClose: () => void;
   onConfirm: (amount: number) => boolean;
 };
@@ -41,7 +40,6 @@ export default function AdaptiveMoneyWizard({
   balance,
   available,
   hidden,
-  frozen = false,
   onClose,
   onConfirm,
 }: Props) {
@@ -71,7 +69,7 @@ export default function AdaptiveMoneyWizard({
     ? balance + cents
     : balance - cents;
 
-  const newAvailable = frozen ? 0 : deposit
+  const newAvailable = deposit
     ? available + cents
     : available - cents;
 

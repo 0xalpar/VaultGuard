@@ -31,7 +31,8 @@ pub mod agentvault {
     }
     pub fn withdraw(ctx: Context<OwnerTransfer>, amount: u64) -> Result<()> {
         let a = &ctx.accounts;
-        require!(!a.vault.frozen, VaultError::Frozen);
+        // The emergency stop applies only to agent payments. The owner can
+        // always recover funds into their own associated token account.
         require!(amount > 0, VaultError::ZeroAmount);
         require!(amount <= a.vault_token.amount, VaultError::InsufficientBalance);
         let id_bytes = a.vault.vault_id.to_le_bytes();
@@ -59,6 +60,7 @@ pub struct Vault {
     pub mint: Pubkey,
     pub vault_id: u64,
     pub bump: u8,
+    // Reserved agent-payment stop; every future agent execution must check it.
     pub frozen: bool,
 }
 

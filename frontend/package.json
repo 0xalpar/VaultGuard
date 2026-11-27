@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:policy": "tsc src/lib/agentvault-policy.ts src/lib/demo-vault.ts --outDir .policy-build --module commonjs --target ES2020 --skipLibCheck && node --test tests/policy.test.cjs tests/demo-vault.test.cjs"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.32.1",
