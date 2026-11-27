@@ -1,0 +1,38 @@
+AGENTVAULT — ADAPTIVE ONE 2.0 — AŞAMA 11B
+Ortak demo veri motoru ve agent bazlı güvenlik kuralları
+
+Bu sürüm kullanıcının yüklediği kaynak kodlara dayanır. AdaptiveProvider, mevcut
+CSS sistemi, onboarding ve navigasyon yapısı korunmuştur. Solana veya gerçek
+cüzdan bağlantısı henüz yoktur. Gerçek para kullanmayın.
+
+Kurulum (mevcut proje): Güncelleme ZIP'indeki src ve tests klasörlerini
+frontend klasörüne kopyalayın; aynı adlı kaynak dosyaları değiştirin.
+Yeni paket yüklemek gerekmez. .next önbelleğini gerekirse silin, npm run dev.
+
+Temiz tam kaynak ZIP: ayrı bir klasöre çıkartın. frontend içinde npm ci,
+sonra npm run dev. Mevcut node_modules, .next ve kişisel gizli dosyalar dahil değildir.
+
+Test: frontend içinde
+npx tsc --noEmit
+npx tsc src/lib/agentvault-policy.ts src/lib/demo-vault.ts --strict --target ES2017 --module commonjs --outDir .policy-build
+node --test tests/*.test.cjs
+
+İlk açılış: 100 USDC örnek yatırma ve 10 + 25 USDC örnek transfer; bakiye 65.
+Param ekranında 25 USDC yatırın: 90 USDC. Ana sayfa ve İşlemlerim aynı değeri görür.
+Güvenliğim ekranında Ödeme asistanını seçin; varsayılan tek işlem limiti 25 USDC,
+günlük 25 USDC, toplam 250 USDC. 50 USDC talep gönderin; reddedilir. Beş ihlalde
+askıya alınır. Örnek imzacı eşleşmiyorsa ret kaydı oluşur ama ihlal sayacı artmaz.
+Asistanlarım ekranından yeniden yetkilendirme yapılabilir. Yetki iptali kalıcıdır
+(demo sıfırlama hariç); eski kayıt silinmez. Dondurma tüm demo para çıkışlarını
+engeller, yatırmaya izin verir. Limitler rezervasyon değildir.
+
+Sınırlamalar: Tek demo kasa, en fazla 6 iptal edilmemiş agent, 20 adres/liste.
+Günlük hesaplama UTC; toplam limit birikimli. UI 2 ondalık, motor mikro-USDC.
+Yerel tarayıcı depolaması güvenlik sınırı değildir; değiştirilebilir ve sekmeler
+arasında eşzamanlılık sağlanmaz. İmzacı eşleşmesi tamamen simülasyondur.
+Bildirimler arayüzdeki ret/askı durumlarıdır; push/e-posta yoktur.
+Gerçek PDA, wallet, on-chain USDC, imza, backend ve ağ testleri sonraki aşamadır.
+
+Doğrulama: Arşivdeki bağımlılık tipleriyle tüm frontend TypeScript kontrolü geçti.
+20/20 otomatik kural/veri modeli testi geçti. Next.js sunucusu veya tarayıcı
+render testi yapılmadı (Windows kaynak arşivi ve farklı çalışma ortamı).

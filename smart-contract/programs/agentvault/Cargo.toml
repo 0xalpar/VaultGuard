@@ -1,0 +1,26 @@
+
+[package]
+name = "agentvault"
+version = "0.1.0"
+description = "AgentVault - AI Agent Financial Firewall"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "agentvault"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = [
+    "anchor-lang/idl-build",
+    "anchor-spl/idl-build",
+    "anchor-spl/token_2022",
+]
+
+[dependencies]
+anchor-lang = { version = "=0.32.1", features = ["init-if-needed"] }
+anchor-spl = { version = "=0.32.1", default-features = false, features = ["token", "associated_token"] }

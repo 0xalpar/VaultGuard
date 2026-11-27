@@ -1,0 +1,525 @@
+
+/* ==========================================
+   ADAPTIVE ONE 2.0
+   HOME DASHBOARD
+========================================== */
+
+.adaptive-home {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+
+  min-width: 0;
+}
+
+/* PAGE HEADER */
+
+.adaptive-home-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  padding-block: 8px;
+}
+
+.adaptive-home-eyebrow {
+  color: var(--ad-muted);
+
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+/* MAIN GRID */
+
+.adaptive-home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+
+  align-items: start;
+  gap: 24px;
+}
+
+.adaptive-home-primary,
+.adaptive-home-secondary {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  gap: 24px;
+}
+
+/* BALANCE CARD */
+
+.adaptive-home-balance {
+  padding: clamp(20px, 3vw, 32px);
+}
+
+.adaptive-home-balance-value {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+
+  gap: 10px;
+}
+
+.adaptive-home-balance-value strong {
+  font-size: clamp(2em, 4vw, 3em);
+
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.adaptive-home-balance-value span {
+  color: var(--ad-muted);
+  font-size: 0.95em;
+}
+
+.adaptive-home-balance-details {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.adaptive-home-detail {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+  min-width: 0;
+}
+
+.adaptive-home-detail strong {
+  font-size: 1.35em;
+  font-weight: 600;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.adaptive-home-actions {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+.adaptive-home-actions
+.adaptive-button {
+  min-height: 60px;
+}
+
+/* SECURITY CARD */
+
+.adaptive-home-security {
+  text-decoration: none;
+
+  border: 1px solid transparent;
+
+  transition: border-color 180ms ease;
+}
+
+.adaptive-home-security:hover {
+  border-color: var(--ad-success);
+}
+
+/* QUICK ACCESS */
+
+.adaptive-home-quick {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.adaptive-home-quick
+.adaptive-list-item {
+  text-decoration: none;
+}
+
+/* STATISTICS */
+
+.adaptive-home-stats {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.adaptive-home-stat {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  gap: 10px;
+
+  text-decoration: none;
+}
+
+.adaptive-home-stat:hover {
+  border-color: var(--ad-accent);
+}
+
+.adaptive-home-stat-value {
+  font-size: 1.75em;
+  font-weight: 600;
+
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* DAILY LIMIT */
+
+.adaptive-home-limit-value {
+  font-size: 1.65em;
+  font-weight: 600;
+
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* TRANSACTION LIST */
+
+.adaptive-home-transactions {
+  display: flex;
+  flex-direction: column;
+}
+
+.adaptive-home-transaction {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+  padding-block: 18px;
+
+  border-bottom: 1px solid var(--ad-border);
+}
+
+.adaptive-home-transaction:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.adaptive-home-transaction-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background: var(--ad-surface-secondary);
+  color: var(--ad-accent);
+}
+
+.adaptive-home-transaction-icon[data-blocked="true"] {
+  background: var(--ad-danger-bg);
+  color: var(--ad-danger);
+}
+
+.adaptive-home-transaction-amount {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-end;
+  text-align: right;
+
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.adaptive-home-text-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 6px;
+
+  min-height: 44px;
+
+  color: var(--ad-accent);
+  font-size: 0.9em;
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+.adaptive-home-text-link:hover {
+  text-decoration: underline;
+}
+
+/* CHART */
+
+.adaptive-chart-period {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 4px;
+  padding: 4px;
+
+  background: var(--ad-surface-secondary);
+  border-radius: 12px;
+}
+
+.adaptive-chart-period button {
+  min-height: 44px;
+  padding: 8px 14px;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  color: var(--ad-muted);
+
+  font-size: 0.875em;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.adaptive-chart-period
+button[aria-pressed="true"] {
+  background: var(--ad-surface);
+  color: var(--ad-accent);
+
+  border-color: var(--ad-border);
+  font-weight: 600;
+}
+
+.adaptive-chart-total {
+  margin-top: 6px;
+
+  font-size: 1.8em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.adaptive-chart-bars {
+  display: grid;
+  align-items: end;
+
+  gap: clamp(4px, 2vw, 20px);
+
+  padding-block: 16px;
+}
+
+.adaptive-chart-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  min-width: 0;
+
+  gap: 10px;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.adaptive-chart-track {
+  position: relative;
+
+  display: flex;
+  align-items: flex-end;
+
+  width: 100%;
+  max-width: 54px;
+  height: 150px;
+
+  border-radius: 10px;
+
+  background: var(--ad-surface-secondary);
+
+  overflow: hidden;
+}
+
+.adaptive-chart-bar {
+  display: block;
+
+  width: 100%;
+
+  background: var(--ad-accent);
+  border-radius: 10px;
+
+  opacity: 0.7;
+}
+
+.adaptive-chart-bar[data-selected="true"],
+.adaptive-chart-column:hover
+.adaptive-chart-bar {
+  opacity: 1;
+}
+
+.adaptive-chart-value {
+  color: var(--ad-text);
+
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.adaptive-chart-label {
+  color: var(--ad-muted);
+
+  font-size: 0.75em;
+  text-align: center;
+}
+
+.adaptive-chart-hidden {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 190px;
+  gap: 12px;
+
+  background: var(--ad-surface-secondary);
+  color: var(--ad-muted);
+
+  border-radius: 16px;
+}
+
+/* ASSISTANT STATUS */
+
+.adaptive-home-agent-row {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.adaptive-home-agent-row
+.adaptive-icon-box {
+  width: 42px;
+  height: 42px;
+}
+
+/* PROFESSIONAL MODE */
+
+.adaptive-home-system-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  padding-block: 12px;
+
+  border-bottom: 1px solid var(--ad-border);
+}
+
+.adaptive-home-system-row:last-child {
+  border-bottom: 0;
+}
+
+/* DESKTOP */
+
+@media (min-width: 1280px) {
+
+  .adaptive-home-grid {
+    grid-template-columns:
+      minmax(0, 1.6fr)
+      minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1500px) {
+
+  .adaptive-home-grid {
+    grid-template-columns:
+      minmax(0, 1.8fr)
+      minmax(0, 1fr);
+  }
+}
+
+/* TABLETS */
+
+@media (max-width: 1023px) {
+
+  .adaptive-home {
+    gap: 20px;
+  }
+
+  .adaptive-home-grid,
+  .adaptive-home-primary,
+  .adaptive-home-secondary {
+    gap: 18px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+
+  .adaptive-home-stats {
+    gap: 10px;
+  }
+
+  .adaptive-home-transaction {
+    flex-wrap: wrap;
+  }
+
+  .adaptive-home-transaction-amount {
+    margin-left: auto;
+  }
+
+  .adaptive-chart-track {
+    height: 110px;
+  }
+
+  .adaptive-home-actions
+  .adaptive-button {
+    min-height: 56px;
+  }
+
+  .adaptive-home-balance-value strong {
+    font-size: 2.2em;
+  }
+}
+
+/* ACCESSIBILITY */
+
+.adaptive-root[data-large-text="true"]
+.adaptive-home-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 640px) {
+
+  .adaptive-root[data-large-text="true"]
+  .adaptive-home-stats,
+
+  .adaptive-root[data-large-text="true"]
+  .adaptive-home-actions,
+
+  .adaptive-root[data-large-text="true"]
+  .adaptive-home-balance-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+
+  .adaptive-home-actions,
+  .adaptive-home-balance-details,
+  .adaptive-home-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

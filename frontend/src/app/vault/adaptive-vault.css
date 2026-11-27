@@ -1,0 +1,625 @@
+
+/* ==========================================
+   ADAPTIVE ONE 2.0
+   MY MONEY / VAULT
+========================================== */
+
+.adaptive-vault {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 26px;
+  min-width: 0;
+}
+
+/* PAGE HEADER */
+
+.adaptive-vault-header {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+  padding-block: 8px;
+}
+
+.adaptive-vault-eyebrow {
+  color: var(--ad-muted);
+
+  font-size: 0.75em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+/* PAGE LAYOUT */
+
+.adaptive-vault-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+
+  align-items: start;
+  gap: 24px;
+}
+
+.adaptive-vault-column {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  gap: 24px;
+}
+
+/* BALANCE CARD */
+
+.adaptive-vault-balance {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 22px;
+  padding: clamp(22px, 4vw, 38px);
+
+  border-radius: 24px;
+
+  background: var(--ad-accent);
+  color: var(--ad-accent-text, #ffffff);
+}
+
+.adaptive-vault-balance-label {
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+.adaptive-vault-balance-number {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+
+  gap: 10px;
+}
+
+.adaptive-vault-balance-number strong {
+  font-size: clamp(2.2em, 5vw, 3.5em);
+
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+
+  font-variant-numeric: tabular-nums;
+
+  overflow-wrap: anywhere;
+}
+
+.adaptive-vault-balance-number span {
+  font-size: 1em;
+}
+
+.adaptive-vault-balance-divider {
+  height: 1px;
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.adaptive-vault-balance-details {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.adaptive-vault-balance-detail {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+  min-width: 0;
+}
+
+.adaptive-vault-balance-detail span {
+  font-size: 0.85em;
+}
+
+.adaptive-vault-balance-detail strong {
+  font-size: 1.4em;
+  font-weight: 600;
+
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.adaptive-vault-eye {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  border: 1px solid currentColor;
+  border-radius: 14px;
+
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+}
+
+/* QUICK ACTIONS */
+
+.adaptive-vault-actions {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.adaptive-vault-action {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+  min-height: 155px;
+
+  text-align: center;
+  cursor: pointer;
+
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.adaptive-vault-action:hover {
+  border-color: var(--ad-accent);
+}
+
+.adaptive-vault-action strong {
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+/* ALLOCATION CHART */
+
+.adaptive-vault-allocation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-wrap: wrap;
+  gap: 26px;
+}
+
+.adaptive-vault-ring {
+  position: relative;
+
+  width: 170px;
+  height: 170px;
+
+  flex-shrink: 0;
+}
+
+.adaptive-vault-ring svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+.adaptive-vault-ring-center {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+}
+
+.adaptive-vault-ring-center strong {
+  font-size: 1.8em;
+  font-weight: 600;
+
+  letter-spacing: -0.04em;
+}
+
+.adaptive-vault-ring-center span {
+  color: var(--ad-muted);
+  font-size: 0.75em;
+}
+
+.adaptive-vault-legend {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+  min-width: 150px;
+
+  gap: 20px;
+}
+
+.adaptive-vault-legend-item {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.adaptive-vault-legend-dot {
+  width: 13px;
+  height: 13px;
+
+  flex-shrink: 0;
+  border-radius: 50%;
+
+  background: var(--ad-accent);
+}
+
+.adaptive-vault-legend-dot[data-allocated="true"] {
+  background: var(--ad-border);
+}
+
+/* WIZARD */
+
+.adaptive-money-wizard {
+  scroll-margin-top: 120px;
+}
+
+.adaptive-wizard-steps {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 10px;
+  padding-block: 8px;
+}
+
+.adaptive-wizard-step {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+
+  color: var(--ad-muted);
+  font-size: 0.8em;
+}
+
+.adaptive-wizard-step-line {
+  width: 100%;
+  height: 5px;
+
+  border-radius: 999px;
+  background: var(--ad-border);
+}
+
+.adaptive-wizard-step[data-active="true"] {
+  color: var(--ad-accent);
+  font-weight: 600;
+}
+
+.adaptive-wizard-step[data-active="true"]
+.adaptive-wizard-step-line {
+  background: var(--ad-accent);
+}
+
+/* AMOUNT INPUT */
+
+.adaptive-money-input-wrap {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+  padding: 16px;
+
+  min-height: 82px;
+
+  background: var(--ad-surface-secondary);
+
+  border: 1px solid var(--ad-border);
+  border-radius: 16px;
+}
+
+.adaptive-money-input-wrap:focus-within {
+  border-color: var(--ad-accent);
+  outline: 2px solid var(--ad-accent);
+  outline-offset: 2px;
+}
+
+.adaptive-money-input {
+  width: 100%;
+  min-width: 0;
+
+  background: transparent;
+  color: var(--ad-text);
+
+  border: 0;
+  outline: none;
+
+  font-size: 2em;
+  font-weight: 500;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.adaptive-money-input-wrap span {
+  color: var(--ad-muted);
+  font-size: 0.9em;
+}
+
+.adaptive-money-presets {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.adaptive-money-presets button {
+  flex: 1;
+  min-width: 55px;
+  min-height: 46px;
+}
+
+/* TRANSACTION SUMMARY */
+
+.adaptive-vault-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.adaptive-vault-summary-row strong {
+  font-weight: 600;
+  font-size: 0.95em;
+
+  overflow-wrap: anywhere;
+}
+
+/* SUCCESS SCREEN */
+
+.adaptive-wizard-success {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 20px;
+  padding-block: 20px;
+
+  text-align: center;
+}
+
+.adaptive-wizard-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 90px;
+  height: 90px;
+
+  border-radius: 50%;
+
+  background: var(--ad-success-bg);
+  color: var(--ad-success);
+}
+
+.adaptive-wizard-success
+.adaptive-card-soft {
+  width: 100%;
+}
+
+.adaptive-vault-result-value {
+  font-size: 1.6em;
+  font-weight: 600;
+}
+
+/* ASSET LIST */
+
+.adaptive-vault-asset {
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.adaptive-vault-asset-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #2775ca;
+  color: #ffffff;
+}
+
+.adaptive-vault-asset-value {
+  margin-left: auto;
+
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* LOCAL TRANSACTION HISTORY */
+
+.adaptive-vault-history-row {
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+  gap: 12px;
+
+  padding-block: 15px;
+
+  border-bottom: 1px solid var(--ad-border);
+}
+
+.adaptive-vault-history-row:last-child {
+  border-bottom: 0;
+}
+
+.adaptive-vault-history-amount {
+  margin-left: auto;
+
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.adaptive-vault-empty {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  padding: 28px 12px;
+
+  text-align: center;
+  color: var(--ad-muted);
+}
+
+/* TEXT LINKS */
+
+.adaptive-vault-link {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 8px;
+  min-height: 44px;
+
+  color: var(--ad-accent);
+
+  font-weight: 600;
+  font-size: 0.9em;
+
+  text-decoration: none;
+}
+
+.adaptive-vault-link:hover {
+  text-decoration: underline;
+}
+
+/* DESKTOP */
+
+@media (min-width: 1280px) {
+
+  .adaptive-vault-grid {
+    grid-template-columns:
+      minmax(0, 1.5fr)
+      minmax(0, 1fr);
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .adaptive-vault {
+    gap: 18px;
+  }
+
+  .adaptive-vault-grid,
+  .adaptive-vault-column {
+    gap: 18px;
+  }
+
+  .adaptive-vault-actions {
+    gap: 10px;
+  }
+
+  .adaptive-vault-action {
+    min-height: 135px;
+  }
+
+  .adaptive-vault-balance {
+    padding: 22px;
+  }
+
+  .adaptive-vault-ring {
+    width: 145px;
+    height: 145px;
+  }
+}
+
+/* LARGE TEXT ACCESSIBILITY */
+
+.adaptive-root[data-large-text="true"]
+.adaptive-vault-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 640px) {
+
+  .adaptive-root[data-large-text="true"]
+  .adaptive-vault-actions,
+
+  .adaptive-root[data-large-text="true"]
+  .adaptive-vault-balance-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+
+  .adaptive-vault-actions,
+  .adaptive-vault-balance-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .adaptive-vault *,
+  .adaptive-vault *::before,
+  .adaptive-vault *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* ADAPTIVE VAULT — COLOR FIX */
+
+.adaptive-vault {
+  background: var(--ad-background);
+  color: var(--ad-text);
+}
+
+.adaptive-vault .adaptive-card {
+  background: var(--ad-surface);
+  color: var(--ad-text);
+}
+
+.adaptive-vault h1,
+.adaptive-vault h2,
+.adaptive-vault h3,
+.adaptive-vault strong,
+.adaptive-vault-result-value {
+  color: var(--ad-text);
+}
+
+.adaptive-vault .adaptive-small,
+.adaptive-vault .adaptive-description,
+.adaptive-vault .adaptive-label {
+  color: var(--ad-muted);
+}

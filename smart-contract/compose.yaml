@@ -1,0 +1,31 @@
+name: agentvault-chain
+services:
+  chain:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentvault-chain:anchor-0.32.1
+    platform: linux/amd64
+    init: true
+    working_dir: /workspace
+    command: ["sleep", "infinity"]
+    ports:
+      - "127.0.0.1:8899:8899"
+      - "127.0.0.1:8900:8900"
+    volumes:
+      - .:/workspace
+      - chain-target:/workspace/target
+      - chain-node:/workspace/node_modules
+      - chain-wallet:/root/.config/solana
+      - cargo-registry:/root/.cargo/registry
+      - cargo-git:/root/.cargo/git
+      - solana-cache:/root/.cache/solana
+      - chain-ledger:/ledger
+volumes:
+  chain-target:
+  chain-node:
+  chain-wallet:
+  cargo-registry:
+  cargo-git:
+  solana-cache:
+  chain-ledger:

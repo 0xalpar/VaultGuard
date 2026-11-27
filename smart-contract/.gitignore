@@ -1,0 +1,7 @@
+target/
+node_modules/
+.anchor/
+fixtures/
+test-ledger/
+*.keypair.json
+.env*

@@ -1,0 +1,1236 @@
+
+@import "tailwindcss";
+
+/* =========================================
+   AGENTVAULT — NEXUS ONE
+   Design System 2.0
+========================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* Main surfaces */
+  --background: #090b0c;
+  --foreground: #f5f5f7;
+  --sidebar: #101213;
+  --surface: #141719;
+  --surface-hover: #1c2022;
+  --surface-elevated: #202526;
+
+  /* Borders */
+  --border: #292f30;
+
+  /* Brand colors */
+  --primary: #80eac0;
+  --primary-hover: #a3f5d4;
+  --accent: #80eac0;
+
+  /* Text colors */
+  --muted: #929b99;
+  --subtle: #68736e;
+
+  /* Status colors */
+  --success: #80eac0;
+  --danger: #ec8c91;
+  --warning: #e9c982;
+
+  /* Effects */
+  --glow: rgba(128, 234, 192, 0.12);
+  --glass: rgba(20, 23, 25, 0.75);
+
+  /* Radius */
+  --radius-panel: 24px;
+  --radius-button: 999px;
+}
+
+/* =========================================
+   TAILWIND THEME
+========================================= */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sidebar: var(--sidebar);
+
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-elevated: var(--surface-elevated);
+
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+
+  --font-sans: var(--font-geist-sans, Arial), sans-serif;
+  --font-mono: var(--font-geist-mono, monospace);
+}
+
+/* =========================================
+   ALTERNATIVE THEMES
+   Will be connected to Settings later
+========================================= */
+
+:root[data-theme="glacier"] {
+  --primary: #91c8ff;
+  --primary-hover: #b5dcff;
+  --accent: #91c8ff;
+  --glow: rgba(145, 200, 255, 0.12);
+}
+
+:root[data-theme="amethyst"] {
+  --primary: #c4adff;
+  --primary-hover: #d9caff;
+  --accent: #c4adff;
+  --glow: rgba(196, 173, 255, 0.12);
+}
+
+/* =========================================
+   GLOBAL STYLES
+========================================= */
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+
+  background: var(--background);
+  color: var(--foreground);
+
+  font-family: var(--font-geist-sans, Arial), sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--background);
+}
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--subtle);
+}
+
+/* =========================================
+   NEXUS TYPOGRAPHY
+========================================= */
+
+.nexus-eyebrow {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.nexus-heading {
+  font-size: clamp(36px, 5vw, 72px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+}
+
+.nexus-description {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.nexus-number {
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+}
+
+.nexus-gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--foreground),
+    var(--accent)
+  );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* =========================================
+   NEXUS LAYOUT
+========================================= */
+
+.nexus-container {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 64px);
+}
+
+.nexus-section {
+  padding-block: 40px;
+}
+
+.nexus-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* =========================================
+   NEXUS SURFACES
+========================================= */
+
+.nexus-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  padding: 24px;
+}
+
+.nexus-glass {
+  background: var(--glass);
+  border: 1px solid var(--border);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  border-radius: var(--radius-panel);
+}
+
+.nexus-glow {
+  background: radial-gradient(
+    ellipse at center,
+    var(--glow),
+    transparent 70%
+  );
+}
+
+/* =========================================
+   NEXUS BUTTONS
+========================================= */
+
+.nexus-button-primary,
+.nexus-button-secondary,
+.nexus-button-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 24px;
+
+  border-radius: var(--radius-button);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: all 200ms ease;
+}
+
+.nexus-button-primary {
+  background: var(--foreground);
+  color: var(--background);
+  border: 1px solid transparent;
+}
+
+.nexus-button-primary:not(:disabled):hover {
+  background: #dce4e0;
+  transform: translateY(-1px);
+}
+
+.nexus-button-secondary {
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.nexus-button-secondary:not(:disabled):hover {
+  background: var(--surface-hover);
+  border-color: var(--muted);
+}
+
+.nexus-button-accent {
+  background: var(--primary);
+  color: var(--background);
+  border: 1px solid transparent;
+}
+
+.nexus-button-accent:not(:disabled):hover {
+  background: var(--primary-hover);
+  box-shadow: 0 0 24px var(--glow);
+}
+
+/* =========================================
+   NEXUS INPUTS
+========================================= */
+
+.nexus-input {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 12px 16px;
+
+  background: var(--background);
+  color: var(--foreground);
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  outline: none;
+}
+
+.nexus-input::placeholder {
+  color: var(--subtle);
+}
+
+.nexus-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow);
+}
+
+/* =========================================
+   NEXUS ANIMATIONS
+========================================= */
+
+@keyframes nexus-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nexus-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes nexus-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes nexus-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.nexus-fade-in {
+  animation: nexus-fade-in 600ms ease-out both;
+}
+
+.nexus-float {
+  animation: nexus-float 6s ease-in-out infinite;
+}
+
+.nexus-orbit {
+  transform-origin: center;
+  animation: nexus-orbit 30s linear infinite;
+}
+
+.nexus-pulse {
+  animation: nexus-pulse 4s ease-in-out infinite;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 768px) {
+  .nexus-section {
+    padding-block: 24px;
+  }
+
+  .nexus-panel {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .nexus-description {
+    font-size: 14px;
+  }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================
+   NEXUS CORE — GENERATION 02
+========================================= */
+
+.nexus-core-perspective {
+  width: 100%;
+  transform-style: preserve-3d;
+  transform-origin: center;
+  transition: transform 250ms ease-out;
+}
+
+/* Reverse orbital movement */
+
+@keyframes nexus-orbit-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.nexus-orbit-reverse {
+  animation: nexus-orbit-reverse 40s linear infinite;
+}
+
+/* Holographic scanning */
+
+@keyframes nexus-scan {
+  0% {
+    transform: translateY(-70px);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.65;
+  }
+
+  85% {
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: translateY(180px);
+    opacity: 0;
+  }
+}
+
+.nexus-scan {
+  animation: nexus-scan 5s linear infinite;
+}
+
+/* Agent data transmission */
+
+@keyframes nexus-data-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+.nexus-data-flow {
+  animation: nexus-data-flow 3s linear infinite;
+}
+
+/* Energy field */
+
+@keyframes nexus-energy-field {
+  0%, 100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.nexus-energy-field {
+  animation: nexus-energy-field 5s ease-in-out infinite;
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-core-perspective {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .nexus-orbit-reverse,
+  .nexus-scan,
+  .nexus-data-flow,
+  .nexus-energy-field {
+    animation: none !important;
+  }
+}
+
+/* =========================================
+   NEXUS VAULT
+========================================= */
+
+@keyframes nexus-vault-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.nexus-vault-float {
+  animation: nexus-vault-float 7s ease-in-out infinite;
+}
+
+.nexus-vault-lock {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 900ms cubic-bezier(
+    0.22, 1, 0.36, 1
+  );
+}
+
+.nexus-vault-float:hover .nexus-vault-lock {
+  transform: rotate(90deg);
+}
+
+@keyframes nexus-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.nexus-modal-enter {
+  animation: nexus-modal-enter 250ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-vault-float,
+  .nexus-modal-enter {
+    animation: none !important;
+  }
+
+  .nexus-vault-lock {
+    transition: none !important;
+  }
+}
+
+/* =========================================
+   NEXUS AGENT NETWORK
+========================================= */
+
+@keyframes nexus-agent-core {
+  0%, 100% {
+    filter: drop-shadow(
+      0 0 6px var(--accent)
+    );
+  }
+
+  50% {
+    filter: drop-shadow(
+      0 0 16px var(--accent)
+    );
+  }
+}
+
+.nexus-agent-core {
+  animation: nexus-agent-core 5s ease-in-out infinite;
+}
+
+.nexus-agent-row {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.nexus-agent-row:hover {
+  background-color: var(--surface);
+}
+
+.nexus-agent-progress {
+  transition: width 600ms
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-agent-core {
+    animation: none !important;
+  }
+
+  .nexus-agent-row,
+  .nexus-agent-progress {
+    transition: none !important;
+  }
+}
+
+/* =========================================
+   NEXUS GUARDIAN
+========================================= */
+
+@keyframes nexus-guardian-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.nexus-guardian-float {
+  animation: nexus-guardian-float
+    6s ease-in-out infinite;
+}
+
+@keyframes nexus-guardian-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nexus-guardian-orbit {
+  animation: nexus-guardian-orbit
+    24s linear infinite;
+}
+
+.nexus-policy-row {
+  transition: background-color 200ms ease;
+}
+
+.nexus-policy-row:hover {
+  background-color: var(--surface);
+}
+
+.nexus-security-input {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  color: var(--foreground);
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.nexus-security-input::-webkit-inner-spin-button,
+.nexus-security-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.nexus-security-input[type="number"] {
+  appearance: textfield;
+}
+
+.nexus-security-switch {
+  transition: background-color 250ms ease;
+}
+
+.nexus-security-switch span {
+  transition: transform 250ms
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-guardian-float,
+  .nexus-guardian-orbit {
+    animation: none !important;
+  }
+
+  .nexus-policy-row,
+  .nexus-security-switch,
+  .nexus-security-switch span {
+    transition: none !important;
+  }
+}
+
+/* =========================================
+   NEXUS ACTIVITY INTELLIGENCE
+========================================= */
+
+.nexus-activity-row {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.nexus-activity-row:hover {
+  background-color: var(--surface);
+}
+
+.nexus-activity-icon {
+  transition: transform 250ms ease;
+}
+
+.nexus-activity-row:hover .nexus-activity-icon {
+  transform: translateY(-2px);
+}
+
+.nexus-activity-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 17px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  transition: all 200ms ease;
+}
+
+.nexus-activity-filter:hover {
+  color: var(--foreground);
+  background: var(--surface);
+}
+
+.nexus-activity-filter[data-active="true"] {
+  color: var(--foreground);
+  background: var(--surface-elevated);
+  border-color: var(--border);
+}
+
+@keyframes nexus-activity-detail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.nexus-activity-detail {
+  animation: nexus-activity-detail-enter
+    250ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-activity-detail {
+    animation: none !important;
+  }
+
+  .nexus-activity-row,
+  .nexus-activity-icon,
+  .nexus-activity-filter {
+    transition: none !important;
+  }
+
+  .nexus-activity-row:hover .nexus-activity-icon {
+    transform: none;
+  }
+}
+
+/* =========================================
+   NEXUS ONE / PERSONALIZATION
+========================================= */
+
+/* EMERALD EDITION */
+
+:root[data-theme="emerald"] {
+  --primary: #80eac0;
+  --primary-hover: #a3f5d4;
+  --accent: #80eac0;
+  --glow: rgba(128, 234, 192, 0.12);
+}
+
+/* GLACIER EDITION */
+
+:root[data-theme="glacier"] {
+  --primary: #91c8ff;
+  --primary-hover: #b5dcff;
+  --accent: #91c8ff;
+  --glow: rgba(145, 200, 255, 0.12);
+}
+
+/* AMETHYST EDITION */
+
+:root[data-theme="amethyst"] {
+  --primary: #c4adff;
+  --primary-hover: #d9caff;
+  --accent: #c4adff;
+  --glow: rgba(196, 173, 255, 0.12);
+}
+
+/* Theme selection */
+
+.nexus-theme-option {
+  transition:
+    border-color 250ms ease,
+    background-color 250ms ease,
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.nexus-theme-option:hover {
+  transform: translateY(-3px);
+}
+
+.nexus-theme-option[data-selected="true"] {
+  box-shadow: 0 0 30px var(--glow);
+}
+
+/* Holographic preview */
+
+@keyframes nexus-theme-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.nexus-theme-float {
+  animation: nexus-theme-float
+    6s ease-in-out infinite;
+}
+
+@keyframes nexus-theme-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.nexus-theme-orbit {
+  animation: nexus-theme-orbit
+    28s linear infinite;
+}
+
+.nexus-setting-row {
+  transition: background-color 200ms ease;
+}
+
+.nexus-setting-row:hover {
+  background-color: var(--surface);
+}
+
+/* Disable motion globally */
+
+:root[data-motion="disabled"] {
+  scroll-behavior: auto !important;
+}
+
+:root[data-motion="disabled"] *,
+:root[data-motion="disabled"] *::before,
+:root[data-motion="disabled"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0ms !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Respect operating system preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-theme-float,
+  .nexus-theme-orbit {
+    animation: none !important;
+  }
+
+  .nexus-theme-option,
+  .nexus-setting-row {
+    transition: none !important;
+  }
+
+  .nexus-theme-option:hover {
+    transform: none;
+  }
+}
+
+/* =========================================
+   NEXUS ONE / FINAL POLISH
+========================================= */
+
+:root {
+  --mobile-nav-height: 76px;
+}
+
+/* Application shell */
+
+.nexus-app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.nexus-app-shell main {
+  min-width: 0;
+}
+
+html {
+  scroll-padding-top: 150px;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Accessibility */
+
+.nexus-skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 14px;
+  transform: translateY(-200%);
+}
+
+.nexus-skip-link:focus {
+  transform: translateY(0);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Mobile navigation */
+
+.nexus-mobile-navigation {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+
+  padding: 8px 10px;
+  padding-bottom:
+    calc(8px + env(safe-area-inset-bottom, 0px));
+
+  background:
+    color-mix(
+      in srgb,
+      var(--background) 88%,
+      transparent
+    );
+
+  border-top: 1px solid var(--border);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.nexus-mobile-navigation-inner {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: center;
+
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.nexus-mobile-link {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+  min-height: 58px;
+  gap: 4px;
+
+  color: var(--muted);
+  text-decoration: none;
+
+  transition: color 200ms ease;
+}
+
+.nexus-mobile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 30px;
+
+  border-radius: 12px;
+
+  transition:
+    background-color 200ms ease,
+    transform 200ms ease;
+}
+
+.nexus-mobile-label {
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.nexus-mobile-link[data-active="true"] {
+  color: var(--accent);
+}
+
+.nexus-mobile-link[data-active="true"]
+.nexus-mobile-icon {
+  background:
+    color-mix(
+      in srgb,
+      var(--accent) 12%,
+      transparent
+    );
+}
+
+.nexus-mobile-indicator {
+  position: absolute;
+  bottom: 0;
+
+  width: 14px;
+  height: 2px;
+
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.nexus-mobile-link:active
+.nexus-mobile-icon {
+  transform: scale(0.9);
+}
+
+/* Dialog improvements */
+
+dialog {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+/* Tablet and mobile */
+
+@media (max-width: 1023px) {
+
+  html {
+    scroll-padding-top: 90px;
+  }
+
+  .nexus-app-shell {
+    padding-bottom:
+      calc(
+        var(--mobile-nav-height) +
+        env(safe-area-inset-bottom, 0px)
+      );
+  }
+
+  .nexus-container {
+    padding-inline: clamp(16px, 4vw, 32px);
+  }
+
+  .nexus-heading {
+    font-size: clamp(34px, 6vw, 56px);
+  }
+}
+
+/* Small mobile devices */
+
+@media (max-width: 480px) {
+
+  .nexus-heading {
+    font-size: clamp(32px, 9vw, 42px);
+    letter-spacing: -0.045em;
+  }
+
+  .nexus-description {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .nexus-button-primary,
+  .nexus-button-secondary,
+  .nexus-button-accent {
+    min-height: 44px;
+    padding-inline: 18px;
+    font-size: 13px;
+  }
+
+  .nexus-panel,
+  .nexus-glass {
+    border-radius: 20px;
+  }
+
+  .nexus-footer {
+    padding-bottom: 12px;
+  }
+
+  dialog {
+    max-width: calc(100vw - 24px);
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Desktop */
+
+@media (min-width: 1024px) {
+  .nexus-mobile-navigation {
+    display: none;
+  }
+}
+
+/* Touch devices */
+
+@media (hover: none) {
+  .nexus-theme-option:hover {
+    transform: none;
+  }
+
+  .nexus-core-perspective {
+    transform: none !important;
+  }
+}
+
+/* User motion preferences */
+
+:root[data-motion="disabled"]
+.nexus-core-perspective {
+  transform: none !important;
+}
+
+:root[data-motion="disabled"]
+.nexus-theme-option:hover {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .nexus-core-perspective {
+    transform: none !important;
+  }
+}

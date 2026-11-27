@@ -1,0 +1,259 @@
+
+/* ==========================================
+   ADAPTIVE ONE 2.0
+   ONBOARDING EXPERIENCE
+========================================== */
+
+.adaptive-onboarding {
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+  padding: clamp(18px, 4vw, 40px);
+
+  border: 1px solid var(--ad-border);
+  border-radius: 28px;
+}
+
+.adaptive-onboarding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.adaptive-onboarding-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.adaptive-onboarding-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+
+  background: var(--ad-accent);
+  color: var(--ad-on-accent);
+
+  border-radius: 14px;
+}
+
+.adaptive-onboarding-progress {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+  margin-block: 28px;
+}
+
+.adaptive-onboarding-progress span {
+  height: 5px;
+  border-radius: 999px;
+
+  background: var(--ad-border);
+
+  transition: background-color 200ms ease;
+}
+
+.adaptive-onboarding-progress span[data-active="true"] {
+  background: var(--ad-accent);
+}
+
+.adaptive-onboarding-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  min-width: 0;
+}
+
+.adaptive-onboarding-illustration {
+  width: 100%;
+  max-width: 300px;
+  margin-inline: auto;
+}
+
+.adaptive-onboarding-illustration svg {
+  width: 100%;
+  height: auto;
+}
+
+.adaptive-onboarding-center {
+  text-align: center;
+}
+
+.adaptive-onboarding-feature {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px;
+
+  background: var(--ad-surface);
+  border: 1px solid var(--ad-border);
+  border-radius: 16px;
+}
+
+.adaptive-onboarding-feature svg {
+  color: var(--ad-accent);
+  flex-shrink: 0;
+}
+
+/* MODE OPTIONS */
+
+.adaptive-onboarding-option {
+  width: 100%;
+  min-height: 100px;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 20px;
+
+  background: var(--ad-surface);
+  color: var(--ad-text);
+
+  border: 2px solid var(--ad-border);
+  border-radius: 20px;
+
+  text-align: left;
+  font-size: 1em;
+
+  cursor: pointer;
+}
+
+.adaptive-onboarding-option[aria-pressed="true"] {
+  border-color: var(--ad-accent);
+  background: var(--ad-surface-secondary);
+}
+
+.adaptive-onboarding-option:hover {
+  background: var(--ad-surface-hover);
+}
+
+/* APPEARANCE OPTIONS */
+
+.adaptive-onboarding-theme-preview {
+  width: 100%;
+  min-height: 120px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 16px;
+
+  border-radius: 12px;
+  text-align: left;
+}
+
+.adaptive-onboarding-theme-preview.light {
+  background: #f3f5f5;
+  color: #172923;
+  border: 1px solid #dce5e0;
+}
+
+.adaptive-onboarding-theme-preview.dark {
+  background: #111619;
+  color: #f0f5f3;
+  border: 1px solid #354440;
+}
+
+/* FOOTER ACTIONS */
+
+.adaptive-onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 32px;
+  padding-top: 24px;
+
+  border-top: 1px solid var(--ad-border);
+}
+
+.adaptive-onboarding-next {
+  flex: 1;
+  min-height: 56px;
+}
+
+.adaptive-onboarding-success {
+  width: 100px;
+  height: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-inline: auto;
+
+  background: var(--ad-success-bg);
+  color: var(--ad-success);
+
+  border-radius: 50%;
+}
+
+/* PAGE TRANSITIONS */
+
+@keyframes adaptive-onboarding-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.adaptive-onboarding-enter {
+  animation: adaptive-onboarding-enter
+    250ms ease-out;
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+  .adaptive-onboarding {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .adaptive-onboarding-option {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .adaptive-onboarding-content {
+    gap: 18px;
+  }
+
+  .adaptive-onboarding-theme-preview {
+    padding: 12px;
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .adaptive-onboarding-actions
+  .adaptive-button {
+    min-height: 52px;
+  }
+
+  .adaptive-onboarding-header {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adaptive-onboarding-enter {
+    animation: none;
+  }
+}
