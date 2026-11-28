@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import {Transaction} from '@solana/web3.js';
 import { createProof, verifyProof, publicKeyBytes } from '../lib/wallet-proof';
 
 export type WalletName = 'Phantom' | 'Solflare';
@@ -9,6 +10,7 @@ type InjectedWallet = {
   isPhantom?: boolean; isSolflare?: boolean; isConnected?: boolean; publicKey?: Key | null;
   connect(): Promise<{publicKey?: Key} | void>;
   disconnect(): Promise<void> | void;
+  signTransaction?(transaction: Transaction): Promise<Transaction>;
   signMessage(message: Uint8Array, encoding?: 'utf8'): Promise<Uint8Array | {signature: Uint8Array; publicKey?: Key}>;
   on(event: WalletEvent, callback: (...args: unknown[]) => void): void;
   off?(event: WalletEvent, callback: (...args: unknown[]) => void): void;
@@ -24,7 +26,7 @@ function findWallet(name: WalletName): InjectedWallet | undefined {
 }
 function matches(p: InjectedWallet, address: string) { return p.publicKey?.toString() === address && p.isConnected !== false; }
 type Connection = { name: WalletName; address: string; verifiedAt: number };
-type Context = { connection: Connection | null; busy: boolean; error: string; connect: (name: WalletName) => Promise<void>; disconnect: () => Promise<void> };
+type Context = { connection: Connection | null; busy: boolean; error: string; connect: (name: WalletName) => Promise<void>; disconnect: () => Promise<void>; signTransaction: (transaction: Transaction) => Promise<Transaction> };
 const WalletContext = createContext<Context | null>(null);
 export default function WalletProvider({children}: {children: ReactNode}) {
   const [connection, setConnection] = useState<Connection | null>(null);
@@ -96,6 +98,18 @@ export default function WalletProvider({children}: {children: ReactNode}) {
     window.addEventListener('focus',check);document.addEventListener('visibilitychange',check);
     return ()=>{window.removeEventListener('focus',check);document.removeEventListener('visibilitychange',check);};
   },[]);
-  return <WalletContext.Provider value={{connection,busy,error,connect,disconnect}}>{children}</WalletContext.Provider>;
+  async function signTransaction(transaction: Transaction) {
+    const p=active.current, address=verified.current, attempt=generation.current;
+    if(lock.current||!p?.signTransaction||!address||!matches(p,address))throw Error('Önce cüzdanınızı bağlayın.');
+    if(transaction.feePayer?.toBase58()!==address)throw Error('İşlem cüzdanı eşleşmiyor.');
+    const expected=transaction.serializeMessage();
+    lock.current=true;setBusy(true);
+    try {
+      const signed=await p.signTransaction(transaction);
+      if(generation.current!==attempt||!matches(p,address)||!expected.equals(signed.serializeMessage()))throw Error('İmza sırasında hesap veya işlem değişti.');
+      return signed;
+    } finally {lock.current=false;setBusy(false);}
+  }
+  return <WalletContext.Provider value={{connection,busy,error,connect,disconnect,signTransaction}}>{children}</WalletContext.Provider>;
 }
 export function useWalletConnection(){const c=useContext(WalletContext);if(!c)throw Error('WalletProvider eksik.');return c;}

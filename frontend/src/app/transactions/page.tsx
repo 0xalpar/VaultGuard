@@ -1,4 +1,5 @@
 "use client";
+import ChainWorkspace from "../../components/ChainWorkspace";
 import { useState, useRef } from "react";
 import { ArrowDownLeft, ArrowUpRight, Wallet, ShieldAlert, Search, Download, X, History, Eye, EyeOff } from "lucide-react";
 import { useAdaptive } from "../../components/AdaptiveProvider";
@@ -7,10 +8,10 @@ import {useDemoVault} from "../../components/DemoVaultProvider";
 import {recordsFor,type DemoRecord} from "../../lib/demo-vault";
 
 type Transaction = DemoRecord;
-const statuses = ["Tümü", "Tamamlandı", "Engellendi"] as const;
+const statuses = ["Tümü", "Tamamlandı", "Engellendi", "Onay bekliyor"] as const;
 const money = (cents:number) => (Math.abs(cents)/100).toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const dateLabel = (date:string) => `${date.slice(8,10)}.${date.slice(5,7)}.${date.slice(0,4)} · ${date.slice(11,16)}`;
-export default function TransactionsPage(){
+function TransactionsPage(){
   const {preferences,setHideBalance}=useAdaptive();
   const {data}=useDemoVault();
   const records=recordsFor(data);
@@ -44,4 +45,8 @@ export default function TransactionsPage(){
     {filtered.map(t=>{const Icon=t.status==='Engellendi'?ShieldAlert:t.amount>0?ArrowDownLeft:Wallet;return <button key={t.id} type="button" className="adaptive-card tx-row" onClick={()=>open(t)}><span className="adaptive-icon-box"><Icon/></span><span className="tx-info"><strong>{t.name}</strong><span className="adaptive-small">{t.description}</span><span className="adaptive-small">{dateLabel(t.date)}{pro?' · '+t.id:''}</span></span><span className="tx-value"><strong>{!hidden&&t.status==='Tamamlandı'?(t.amount>0?'+':'−'):''}{display(t.amount)}</strong><span className="tx-status" data-status={t.status}>{t.status}</span></span></button>})}
     <dialog ref={dialog} className="tx-dialog" onClose={()=>setSelected(null)} aria-labelledby="tx-detail-title"><div className="adaptive-stack"><div className="adaptive-row adaptive-between"><h2 id="tx-detail-title" className="adaptive-section-heading">İşlem detayları</h2><button type="button" className="adaptive-icon-button" aria-label="Kapat" onClick={()=>dialog.current?.close()}><X/></button></div>{selected&&<><strong className="tx-total">{display(selected.amount)}</strong><dl className="adaptive-stack">{[['İşlem',selected.name],['Durum',selected.status],['Tarih',dateLabel(selected.date)],['Açıklama',selected.description],['Kimlik',selected.id],['AgentID',selected.agentId??'Kasa sahibi'],['Alıcı adresi',selected.recipient??'—'],['Ret kodu',selected.reason??'—'],['Talep nonce',String(selected.nonce??'—')],['Askıya alma',selected.suspended?'Evet':'Hayır']].map(([k,v])=><div key={k} className="adaptive-row adaptive-between"><dt className="adaptive-label">{k}</dt><dd>{v}</dd></div>)}</dl><p className="adaptive-small">{selected.status==='Tamamlandı'?'Örnek tamamlanan işlem.':'Bu tutar gerçekleşen harcamaya dahil değildir.'}</p></>}<button type="button" className="adaptive-button adaptive-button-secondary" onClick={()=>dialog.current?.close()}>Kapat</button></div></dialog>
   </div>;
+}
+
+export default function Page() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainWorkspace view="transactions"/> : <TransactionsPage/>;
 }

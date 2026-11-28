@@ -1,4 +1,6 @@
 use anchor_lang::prelude::*;
+pub mod firewall;
+pub use firewall::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{self, Mint, Token, TokenAccount, TransferChecked}};
 
 // Placeholder only. Generate your own program keypair and run anchor keys sync.
@@ -9,6 +11,12 @@ const USDC_DEVNET: Pubkey = Pubkey::new_from_array([59, 68, 44, 179, 145, 33, 87
 #[program]
 pub mod agentvault {
     use super::*;
+    pub fn set_agent_emergency(ctx: Context<SetAgentEmergency>, frozen: bool) -> Result<()> { firewall::set_emergency(ctx, frozen) }
+    pub fn register_agent(ctx: Context<RegisterAgent>, agent_key: Pubkey, policy: Policy) -> Result<()> { firewall::register(ctx, agent_key, policy) }
+    pub fn update_agent_policy(ctx: Context<ManageAgent>, policy: Policy) -> Result<()> { firewall::update_policy(ctx, policy) }
+    pub fn set_agent_status(ctx: Context<ManageAgent>, status: u8) -> Result<()> { firewall::set_status(ctx, status) }
+    pub fn submit_payment(ctx: Context<SubmitPayment>, nonce: u64, amount: u64, expires_at: i64, recipient_label: String) -> Result<()> { firewall::submit(ctx, nonce, amount, expires_at, recipient_label) }
+    pub fn resolve_payment(ctx: Context<ResolvePayment>, approved: bool) -> Result<()> { firewall::resolve(ctx, approved) }
     pub fn initialize_vault(ctx: Context<InitializeVault>, vault_id: u64) -> Result<()> {
         let v = &mut ctx.accounts.vault;
         v.owner = ctx.accounts.owner.key();
@@ -31,7 +39,8 @@ pub mod agentvault {
     }
     pub fn withdraw(ctx: Context<OwnerTransfer>, amount: u64) -> Result<()> {
         let a = &ctx.accounts;
-        require!(!a.vault.frozen, VaultError::Frozen);
+        // The emergency stop applies only to agent payments. The owner can
+        // always recover funds into their own associated token account.
         require!(amount > 0, VaultError::ZeroAmount);
         require!(amount <= a.vault_token.amount, VaultError::InsufficientBalance);
         let id_bytes = a.vault.vault_id.to_le_bytes();
@@ -59,6 +68,7 @@ pub struct Vault {
     pub mint: Pubkey,
     pub vault_id: u64,
     pub bump: u8,
+    // Reserved agent-payment stop; every future agent execution must check it.
     pub frozen: bool,
 }
 
@@ -115,4 +125,15 @@ pub enum VaultError {
     #[msg("Amount must be positive.")] ZeroAmount,
     #[msg("Vault withdrawals are frozen.")] Frozen,
     #[msg("Insufficient vault balance.")] InsufficientBalance,
+    #[msg("Vault agent payments are frozen")] FrozenVault,
+    #[msg("Invalid agent public key or signer")] WrongAgent,
+    #[msg("Invalid policy or address-list size")] InvalidPolicy,
+    #[msg("Agent authorization has been revoked")] Revoked,
+    #[msg("Invalid status")] InvalidStatus,
+    #[msg("Nonce must increase")] Replay,
+    #[msg("Expiry cannot exceed 24 hours")] InvalidExpiry,
+    #[msg("Request already resolved")] AlreadyResolved,
+    #[msg("Wrong recipient token authority")] WrongRecipient,
+    #[msg("Amount overflow")] Overflow,
+    #[msg("Recipient label must have 1 to 64 UTF-8 bytes")] InvalidRecipientLabel,
 }

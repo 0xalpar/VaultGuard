@@ -1,9 +1,10 @@
 
 "use client";
+import ChainWorkspace from "../components/ChainWorkspace";
 
 import Link from "next/link";
 import {useDemoVault} from "../components/DemoVaultProvider";
-import {recordsFor,statusLabel} from "../lib/demo-vault";
+import {recordsFor,statusLabel,dayAt} from "../lib/demo-vault";
 
 import {
   Wallet,
@@ -71,7 +72,7 @@ function formatMoney(value: number) {
 
 /* MAIN HOME PAGE */
 
-export default function HomePage() {
+function HomePage() {
   const {
     preferences,
     setHideBalance,
@@ -81,7 +82,7 @@ export default function HomePage() {
   const vault=data.vault;
   const liveAgents=vault.agents.filter(a=>a.status!=="revoked");
   const assistants=liveAgents.map(a=>({id:a.id,name:data.profiles[a.id].name,active:a.status==="active",status:statusLabel[a.status],spent:(a.day===day?a.dailySpent:0)/1e6,limit:a.policy.dailyLimit/1e6}));
-  const demo={balance:vault.balance/1e6,available:vault.frozen?0:vault.balance/1e6,allocated:vault.frozen?vault.balance/1e6:0,dailySpent:vault.logs.filter(l=>l.decision==="approved"&&new Date(l.at).toISOString().slice(0,10)===day).reduce((sum,l)=>sum+l.request.amount/1e6,0),dailyLimit:liveAgents.reduce((sum,a)=>sum+a.policy.dailyLimit/1e6,0),activeAgents:liveAgents.filter(a=>a.status==="active").length,blockedTransactions:vault.logs.filter(l=>l.decision==="rejected").length};
+  const demo={balance:vault.balance/1e6,available:vault.balance/1e6,allocated:0,dailySpent:vault.logs.filter(l=>l.decision==="approved"&&dayAt(l.at)===day).reduce((sum,l)=>sum+l.request.amount/1e6,0),dailyLimit:liveAgents.reduce((sum,a)=>sum+a.policy.dailyLimit/1e6,0),activeAgents:liveAgents.filter(a=>a.status==="active").length,blockedTransactions:vault.logs.filter(l=>l.decision==="rejected").length};
   const transactions=recordsFor(data).slice(0,5).map(r=>({id:r.id,icon:r.status==="Engellendi"?ShieldAlert:r.amount>0?ArrowDownLeft:Bot,title:r.name,description:r.description,amount:(r.status==="Engellendi"?"":r.amount>0?"+":"−")+formatMoney(Math.abs(r.amount)/100),blocked:r.status==="Engellendi"}));
   const easy =
     preferences.mode === "easy";
@@ -334,7 +335,7 @@ export default function HomePage() {
               <p style={{
                 fontWeight: 600,
               }}>
-                {vault.frozen?"Demo kasa donduruldu":"Demo kuralları etkin"}
+                {vault.frozen?"Demo agent ödemeleri durduruldu":"Demo kuralları etkin"}
               </p>
 
               <p
@@ -889,4 +890,8 @@ export default function HomePage() {
 
     </div>
   );
+}
+
+export default function Page() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainWorkspace view="home"/> : <HomePage/>;
 }

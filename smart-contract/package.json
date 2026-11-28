@@ -1,1 +1,17 @@
-{"name":"agentvault-smart-contract","version":"0.1.0","private":true,"scripts":{"fixture":"node scripts/create-local-mint.cjs","test":"node --test tests/vault.test.cjs"},"dependencies":{"@coral-xyz/anchor":"0.32.1","@solana/web3.js":"1.98.4","@solana/spl-token":"0.4.14"}}
+{
+  "name": "agentvault-smart-contract",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "fixture": "node scripts/create-local-mint.cjs",
+    "test": "node --test --test-concurrency=1 tests/vault.test.cjs tests/firewall.test.cjs"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "0.32.1",
+    "@solana/web3.js": "1.98.4"
+  },
+  "overrides": {
+    "jayson": "5.0.0",
+    "toml": "5.0.1"
+  }
+}

@@ -4,6 +4,7 @@
 import { useState } from "react";
 
 import {useDemoVault} from "./DemoVaultProvider";
+import {dayAt} from "../lib/demo-vault";
 import { EyeOff } from "lucide-react";
 
 import {
@@ -26,11 +27,11 @@ export default function AdaptiveSpendingChart() {
 
   const {data:store,day}=useDemoVault();
   const length=period==="7D"?7:30,group=period==="7D"?1:5;
-  const end=Date.parse(day+"T00:00:00Z");
+  const end=Date.parse(day+"T00:00:00+03:00");
   const data=Array.from({length:length/group},(_,i)=>{
     const start=end-(length-1-i*group)*86400000;
     const value=store.vault.logs.filter(l=>l.decision==="approved"&&l.at>=start&&l.at<start+group*86400000).reduce((sum,l)=>sum+l.request.amount/1e6,0);
-    return {label:new Date(start).toISOString().slice(5,10),value};
+    return {label:dayAt(start).slice(5,10),value};
   });
 
   const total = data.reduce(

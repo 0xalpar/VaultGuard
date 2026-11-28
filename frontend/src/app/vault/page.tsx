@@ -1,4 +1,5 @@
 "use client";
+import ChainVault from "../../components/ChainVault";
 
 import Link from "next/link";
 import { useState, useRef } from "react";
@@ -55,7 +56,7 @@ function formatMoney(cents: number) {
 
 /* MAIN PAGE */
 
-export default function VaultPage() {
+function DemoVaultPage() {
 
   const {
     preferences,
@@ -85,7 +86,7 @@ export default function VaultPage() {
   const hidden =
     preferences.hideBalance;
 
-  const allocated = data.vault.frozen ? balance : 0;
+  const allocated = 0; // Agent limits and stops do not reserve owner funds.
 
   const available = Math.max(
     0,
@@ -229,7 +230,7 @@ export default function VaultPage() {
 
 
       <section className="adaptive-card adaptive-stack">
-        <div className="adaptive-row adaptive-between"><div><h2 className="adaptive-section-heading">Demo kasa #001</h2><p className="adaptive-small">{data.vault.frozen?"Donduruldu":"Aktif"} · Gerçek cüzdandan bağımsız · PDA henüz bağlı değil</p></div><button type="button" className="adaptive-button adaptive-button-secondary" onClick={()=>{if(window.confirm(data.vault.frozen?"Demo kasayı yeniden aç?":"Demo kasadan tüm çıkışları durdur?")){freeze(!data.vault.frozen);setAction(null);}}}>{data.vault.frozen?"Dondurmayı kaldır":"Kasayı dondur"}</button></div>
+        <div className="adaptive-row adaptive-between"><div><h2 className="adaptive-section-heading">Demo kasa #001</h2><p className="adaptive-small">{data.vault.frozen?"Donduruldu":"Aktif"} · Gerçek cüzdandan bağımsız · PDA henüz bağlı değil</p></div><button type="button" className="adaptive-button adaptive-button-secondary" onClick={()=>{if(window.confirm(data.vault.frozen?"Demo kasayı yeniden aç?":"Demo agent ödemelerini durdur? Kendi cüzdanına çekme açık kalır.")){freeze(!data.vault.frozen);setAction(null);}}}>{data.vault.frozen?"Dondurmayı kaldır":"Kasayı dondur"}</button></div>
       </section>
       {/* DEMO NOTICE */}
 
@@ -367,7 +368,7 @@ export default function VaultPage() {
             <button
               type="button"
               className="adaptive-card adaptive-vault-action"
-              disabled={data.vault.frozen || balance===0}
+              disabled={balance===0}
               onClick={() =>
                 openWizard("withdraw")
               }
@@ -405,7 +406,6 @@ export default function VaultPage() {
                 action={action}
                 balance={balance}
                 available={available}
-                frozen={data.vault.frozen}
                 hidden={hidden}
                 onClose={() =>
                   setAction(null)
@@ -711,7 +711,7 @@ export default function VaultPage() {
 
             <p className="adaptive-description">
 
-              Agent limitleri para rezervasyonu değildir. Kasa dondurulursa tüm demo para çıkışları durur.
+              Agent limitleri para rezervasyonu değildir. Dondurma yalnızca agent ödemelerini durdurur. Kendi cüzdanınıza para çekebilirsiniz.
 
             </p>
 
@@ -913,4 +913,8 @@ export default function VaultPage() {
 
     </div>
   );
+}
+
+export default function VaultPage() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainVault/> : <DemoVaultPage/>;
 }

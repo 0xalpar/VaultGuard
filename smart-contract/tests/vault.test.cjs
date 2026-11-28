@@ -2,7 +2,7 @@ const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const anchor = require('@coral-xyz/anchor');
 const {PublicKey, Keypair, SystemProgram} = require('@solana/web3.js');
-const spl = require('@solana/spl-token');
+const spl = require('./local-token-fixtures.cjs');
 const mint = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
 
 test('Vault PDA lifecycle and authorization (local validator only)', async t => {
@@ -42,17 +42,20 @@ test('Vault PDA lifecycle and authorization (local validator only)', async t => 
     await assert.rejects(program.methods.withdraw(amount(1)).accountsStrict({...transfer,owner:attacker.publicKey}).signers([attacker]).rpc());
     assert.equal((await program.account.vault.fetch(vault)).frozen,false); assert.equal(await balance(),25_000_000n);
   });
-  await t.test('freeze blocks withdrawal; deposits remain allowed',async()=>{
+  await t.test('agent stop preserves owner withdrawal and deposit',async()=>{
     await program.methods.setFrozen(true).accountsStrict({owner,vault}).rpc();
     assert.equal((await program.account.vault.fetch(vault)).frozen,true);
-    await assert.rejects(program.methods.withdraw(amount(1_000_000)).accountsStrict(transfer).rpc(),/Frozen|frozen/);
-    await program.methods.deposit(amount(5_000_000)).accountsStrict(transfer).rpc(); assert.equal(await balance(),30_000_000n);
+    const before=(await spl.getAccount(provider.connection,ownerToken)).amount;
+    await program.methods.withdraw(amount(1_000_000)).accountsStrict(transfer).rpc();
+    assert.equal((await spl.getAccount(provider.connection,ownerToken)).amount,before+1_000_000n);
+    assert.equal((await program.account.vault.fetch(vault)).frozen,true);
+    await program.methods.deposit(amount(5_000_000)).accountsStrict(transfer).rpc(); assert.equal(await balance(),29_000_000n);
   });
   await t.test('unfreeze and withdraw 10 USDC',async()=>{
     await program.methods.setFrozen(false).accountsStrict({owner,vault}).rpc();
     const before=(await spl.getAccount(provider.connection,ownerToken)).amount;
     await program.methods.withdraw(amount(10_000_000)).accountsStrict(transfer).rpc();
-    assert.equal(await balance(),20_000_000n); assert.equal((await spl.getAccount(provider.connection,ownerToken)).amount,before+10_000_000n);
+    assert.equal(await balance(),19_000_000n); assert.equal((await spl.getAccount(provider.connection,ownerToken)).amount,before+10_000_000n);
   });
   await t.test('reject alternate mint',async()=>{
     const other=await spl.createMint(provider.connection,payer,owner,null,6);

@@ -1,5 +1,6 @@
 
 "use client";
+import ChainWorkspace from "../../components/ChainWorkspace";
 
 import { useState, useRef } from "react";
 
@@ -43,7 +44,7 @@ import "./adaptive-agents.css";
 
 const MAX_AGENTS = 6;
 
-export default function AgentsPage() {
+function AgentsPage() {
   const { preferences } = useAdaptive();
 
   const {data,day,saveAgent:storeAgent,status,reset}=useDemoVault();
@@ -676,4 +677,8 @@ export default function AgentsPage() {
       </section>
     </div>
   );
+}
+
+export default function Page() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainWorkspace view="agents"/> : <AgentsPage/>;
 }

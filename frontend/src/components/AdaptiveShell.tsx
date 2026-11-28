@@ -69,6 +69,7 @@ const navigation = [
     href: "/policies",
     icon: ShieldCheck,
   },
+  { name: "Onaylarım", shortName: "Onaylar", href: "/approvals", icon: CheckCircle2 },
   {
     name: "İşlemlerim",
     shortName: "İşlemler",
@@ -268,6 +269,7 @@ const adaptivePages = new Set([
   "/vault",
   "/agents",
   "/policies",
+  "/approvals",
   "/transactions",
   "/settings",
   "/blockchain",
@@ -791,6 +793,7 @@ const legacyPage = !adaptivePages.has(pathname);
             className="adaptive-bottom-link"
             data-active={
               mobileMenuOpen ||
+              isActive("/approvals") ||
               isActive("/transactions") ||
               isActive("/settings")
             }

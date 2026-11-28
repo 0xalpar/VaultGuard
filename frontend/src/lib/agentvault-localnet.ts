@@ -13,27 +13,27 @@ export function localConnection() {
   if (process.env.NEXT_PUBLIC_SOLANA_NETWORK !== 'localnet' || rpc !== 'http://127.0.0.1:8899' || ws !== 'ws://127.0.0.1:8900' || process.env.NEXT_PUBLIC_AGENTVAULT_PROGRAM_ID !== PROGRAM.toBase58() || process.env.NEXT_PUBLIC_USDC_MINT !== MINT.toBase58()) throw Error('Localnet ortam değişkenleri eksik veya IDL ile uyumsuz.');
   return new Connection(rpc, { commitment: 'confirmed', wsEndpoint: ws, disableRetryOnRateLimit: true });
 }
-export function vaultAddress(owner: PublicKey, id: bigint) {
+export function vaultAddress(owner: PublicKey, id: bigint, program = PROGRAM) {
   const bytes = Buffer.alloc(8); bytes.writeBigUInt64LE(id);
-  return PublicKey.findProgramAddressSync([Buffer.from('vault'), owner.toBuffer(), bytes], PROGRAM);
+  return PublicKey.findProgramAddressSync([Buffer.from('vault'), owner.toBuffer(), bytes], program);
 }
 export function formatUnits(n: bigint, decimals=6) {
   const base=BigInt(10)**BigInt(decimals); return `${n/base}.${(n%base).toString().padStart(decimals,'0')}`;
 }
-export async function inspectLocalnet(c: Connection) {
-  const [version, program, mint] = await Promise.all([c.getVersion(), c.getAccountInfo(PROGRAM), c.getAccountInfo(MINT)]);
+export async function inspectLocalnet(c: Connection, programId = PROGRAM) {
+  const [version, program, mint] = await Promise.all([c.getVersion(), c.getAccountInfo(programId), c.getAccountInfo(MINT)]);
   if (!program?.executable || !program.owner.equals(new PublicKey('BPFLoaderUpgradeab1e11111111111111111111111'))) throw Error('Beklenen çalıştırılabilir program bulunamadı.');
   if (!mint || !mint.owner.equals(TOKEN) || mint.data.length!==82 || mint.data[44]!==6 || mint.data[45]!==1) throw Error('Test mint hesabı geçersiz.');
-  return {version:version['solana-core'], program:PROGRAM.toBase58(), mint:MINT.toBase58(), supply:formatUnits(mint.data.readBigUInt64LE(36))};
+  return {version:version['solana-core'], program:programId.toBase58(), mint:MINT.toBase58(), supply:formatUnits(mint.data.readBigUInt64LE(36))};
 }
-export async function readVaults(c: Connection, address: string) {
+export async function readVaults(c: Connection, address: string, programId = PROGRAM) {
   const owner = new PublicKey(address);
-  const rows = await c.getProgramAccounts(PROGRAM,{filters:[{dataSize:82},{memcmp:{offset:8,bytes:owner.toBase58()}}]});
+  const rows = await c.getProgramAccounts(programId,{filters:[{dataSize:82},{memcmp:{offset:8,bytes:owner.toBase58()}}]});
   // Vault Borsh: discriminator(8), owner(32), mint(32), id(8), bump(1), frozen(1).
   return Promise.all(rows.map(async ({pubkey,account})=>{
     const d=account.data;
     if (!d.subarray(0,8).equals(DISC) || !new PublicKey(d.subarray(8,40)).equals(owner) || !new PublicKey(d.subarray(40,72)).equals(MINT) || d[81]>1) throw Error('Geçersiz Vault hesabı.');
-    const id=d.readBigUInt64LE(72); const [expected,bump]=vaultAddress(owner,id);
+    const id=d.readBigUInt64LE(72); const [expected,bump]=vaultAddress(owner,id,programId);
     if (!expected.equals(pubkey)||bump!==d[80]) throw Error('Vault PDA doğrulanamadı.');
     const [token]=PublicKey.findProgramAddressSync([pubkey.toBuffer(),TOKEN.toBuffer(),MINT.toBuffer()],ATA);
     const a=await c.getAccountInfo(token);
