@@ -86,20 +86,54 @@ test('agent payment lifecycle on the isolated local validator', async () => {
   assert.equal(resumed.violations.toNumber(),0);
   assert.equal(resumed.totalSpent.toNumber(),15_000_000);
   assert.equal((await send(11,6_000_000,allowed)).reason,7);
-  const queuedA=await send(12,3_000_000,pending);
-  const queuedB=await send(13,3_000_000,pending);
-  assert.equal(queuedA.status,0);
-  assert.equal(queuedB.status,0);
-  const resolved=await Promise.allSettled([
-    resolve(queuedA.request,pending),
-    resolve(queuedB.request,pending),
-  ]);
-  assert.ok(resolved.every(result=>result.status==='fulfilled'));
-  assert.deepEqual(resolved.map(result=>result.value.status).sort(),[1,2]);
-  assert.equal(resolved.find(result=>result.value.status===2).value.reason,7);
+  const batchSize=Number(process.env.VAULTGUARD_LOAD_COUNT ?? 2);
+  assert.ok(Number.isInteger(batchSize)&&batchSize>=2&&batchSize<=32);
+  const paymentAmount=batchSize===2?3_000_000:1_000_000;
+  const expectedPaid=Math.min(batchSize,Math.floor(5_000_000/paymentAmount));
+  const queue=[];
+  for(let i=0;i<batchSize;i++) {
+    const entry=await send(12+i,paymentAmount,pending);
+    assert.equal(entry.status,0);
+    queue.push(entry);
+  }
 
-  const last=await send(14,1,pending);
+  const start=performance.now();
+  const resolved=await Promise.allSettled(queue.map(({request})=>resolve(request,pending)));
+  const failures=resolved.filter(result=>result.status==='rejected');
+  assert.deepEqual(failures,[]);
+  const receipts=resolved.map(result=>result.value);
+  assert.equal(receipts.filter(entry=>entry.status===1).length,expectedPaid);
+  const deniedByLimits=receipts.filter(entry=>entry.status===2);
+  assert.equal(deniedByLimits.length,batchSize-expectedPaid);
+  assert.ok(deniedByLimits.every(entry=>entry.reason===7||entry.reason===2));
+  if(batchSize>2) console.log({batchSize, paid:expectedPaid, refused:deniedByLimits.length, elapsedMs:Math.round(performance.now()-start)});
+
+  await status(0);
+  await p.methods.updateAgentPolicy({...policy,dailyLimit:n(21_000_000)}).accountsStrict({owner,vault,agent,guard}).rpc();
+  const last=await send(12+batchSize,1,pending);
   await status(3);
   assert.equal((await resolve(last.request,pending)).reason,2);
-  assert.equal((await spl.getAccount(c,vaultToken)).amount,82_000_000n);
+  assert.equal((await spl.getAccount(c,vaultToken)).amount,85_000_000n-BigInt(expectedPaid*paymentAmount));
+  const otherOwner=Keypair.generate();
+  const otherFunding=await c.requestAirdrop(otherOwner.publicKey,LAMPORTS_PER_SOL);
+  await c.confirmTransaction(otherFunding,'confirmed');
+  const secondVault=pda(Buffer.from('vault'),pub(otherOwner.publicKey),le(id));
+  const secondGuard=pda(Buffer.from('guard'),pub(secondVault));
+  const secondAgent=pda(Buffer.from('agent'),pub(secondVault),pub(signer.publicKey));
+  const otherKey=Keypair.generate().publicKey;
+  const thirdAgent=pda(Buffer.from('agent'),pub(secondVault),pub(otherKey));
+  await p.methods.initializeVault(id).accountsStrict({
+    owner:otherOwner.publicKey,mint,vault:secondVault,vaultToken:ata(secondVault),
+    tokenProgram,associatedTokenProgram,systemProgram:sys,
+  }).signers([otherOwner]).rpc();
+  for(const [agentId,key] of [[secondAgent,signer.publicKey],[thirdAgent,otherKey]]) {
+    await p.methods.registerAgent(key,policy).accountsStrict({
+      owner:otherOwner.publicKey,vault:secondVault,agent:agentId,guard:secondGuard,systemProgram:sys,
+    }).signers([otherOwner]).rpc();
+  }
+  assert.equal((await state()).status,3);
+  assert.notEqual(secondAgent.toBase58(),agent.toBase58());
+  assert.equal((await p.account.agentRegistration.fetch(secondAgent)).status,0);
+  assert.equal((await p.account.agentRegistration.fetch(thirdAgent)).totalSpent.toNumber(),0);
+
 });

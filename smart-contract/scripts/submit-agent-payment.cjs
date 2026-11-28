@@ -1,7 +1,12 @@
 const fs = require('node:fs');
 const { BN, Program } = require('@coral-xyz/anchor');
 const { Connection, Keypair, PublicKey, SystemProgram, Transaction } = require('@solana/web3.js');
-const { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } = require('@solana/spl-token');
+const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+const getTokenAddress = (mint, owner) => PublicKey.findProgramAddressSync(
+  [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+)[0];
 
 async function main() {
   const [keyFile, vaultAddress, recipientAddress, amountText, nonceText, recipientLabel] = process.argv.slice(2);
@@ -33,8 +38,8 @@ async function main() {
   const expiresAt = new BN(Math.floor(Date.now() / 1000) + 300);
   const instruction = await program.methods.submitPayment(nonce,amount,expiresAt,recipientLabel).accountsStrict({
     agentSigner:signer.publicKey, vault, agent, request, guard, mint, recipient,
-    vaultToken:getAssociatedTokenAddressSync(mint,vault,true),
-    recipientToken:getAssociatedTokenAddressSync(mint,recipient,true),
+    vaultToken:getTokenAddress(mint,vault),
+    recipientToken:getTokenAddress(mint,recipient),
     tokenProgram:TOKEN_PROGRAM_ID, associatedTokenProgram:ASSOCIATED_TOKEN_PROGRAM_ID,
     systemProgram:SystemProgram.programId,
   }).instruction();

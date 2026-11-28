@@ -3,15 +3,17 @@ import {PublicKey, SystemProgram} from '@solana/web3.js';
 import Link from 'next/link';
 import {useEffect, useRef, useState, type FormEvent} from 'react';
 import {useWalletConnection} from './WalletProvider';
+import WalletConnectionCard from './WalletConnectionCard';
 import {useAdaptive} from './AdaptiveProvider';
 import {agentInstruction, agentStatusText, chainAgents, chainPayments, chainProgram, currentGuard, guardAddress, paymentStatusText, reasonText, resolveInstruction, sendOwnerTransaction, statusInstruction, units, type AgentAccount, type PaymentAccount} from '../lib/chain-client';
-import {formatUnits, inspectLocalnet, localConnection, readVaults} from '../lib/agentvault-localnet';
+import {formatUnits} from '../lib/agentvault-localnet';
+import {chainConnection, chainLabel, inspectChain, readChainVaults} from '../lib/chain-network';
 
 type View = 'home' | 'agents' | 'policies' | 'approvals' | 'transactions';
 type Row<T> = {address: PublicKey; account: T};
 type Snapshot = {
   owner: string;
-  vaults: Awaited<ReturnType<typeof readVaults>>;
+  vaults: Awaited<ReturnType<typeof readChainVaults>>;
   vault: string;
   guard: {epoch: BN; frozen: boolean};
   agents: Row<AgentAccount>[];
@@ -53,9 +55,9 @@ export default function ChainWorkspace({view}:{view:View}) {
       if (loading || !owner) return;
       loading = true;
       try {
-        const c = localConnection();
-        await inspectLocalnet(c);
-        const vaults = await readVaults(c, owner);
+        const c = chainConnection();
+        await inspectChain(c);
+        const vaults = await readChainVaults(c, owner);
         const address = vaults.find(v => v.address === selected)?.address ?? vaults[0]?.address ?? '';
         const key = address ? new PublicKey(address) : null;
         const [guard, agents, payments] = key
@@ -77,14 +79,14 @@ export default function ChainWorkspace({view}:{view:View}) {
     return () => {disposed = true;clearInterval(timer);};
   }, [owner, selected, revision]);
 
-  async function execute(build: (c: ReturnType<typeof localConnection>, user: PublicKey, vault: PublicKey) => Promise<import('@solana/web3.js').TransactionInstruction>) {
+  async function execute(build: (c: ReturnType<typeof chainConnection>, user: PublicKey, vault: PublicKey) => Promise<import('@solana/web3.js').TransactionInstruction>) {
     if (!owner || !activeVault || lock.current || pendingCheck) return;
     lock.current = true;
     setBusy(true);
     setNotice('');
     setSignature('');
     try {
-      const c = localConnection();
+      const c = chainConnection();
       const user = new PublicKey(owner);
       const ix = await build(c,user,new PublicKey(activeVault.address));
       await sendOwnerTransaction(user,[ix],signTransaction,setSignature);
@@ -130,20 +132,20 @@ export default function ChainWorkspace({view}:{view:View}) {
   const canAct = !busy && !pendingCheck;
 
   return <div className="adaptive-stack">
-    <header><p className="adaptive-small">Solana Localnet · test USDC</p><h1 className="adaptive-heading">{headings[view]}</h1></header>
-    {!owner && <p>Solana cüzdanınızı bağlayın. <Link href="/blockchain">Blockchain bağlantısı</Link></p>}
+    <header><p className="adaptive-small">Solana {chainLabel} · test USDC</p><h1 className="adaptive-heading">{headings[view]}</h1></header>
+    {!owner && <WalletConnectionCard/>}
     {error && <p role="alert">{error}</p>}
     {notice && <p role="status">{notice}</p>}
     {signature && <p style={{overflowWrap:'anywhere'}}>İşlem imzası {signature}</p>}
     {pendingCheck && <button className={button} onClick={async()=>{
       try {
-        const result = await localConnection().getSignatureStatus(signature,{searchTransactionHistory:true});
+        const result = await chainConnection().getSignatureStatus(signature,{searchTransactionHistory:true});
         if (result.value?.err || ['confirmed','finalized'].includes(result.value?.confirmationStatus ?? '')) {
           setPendingCheck(false);setNotice(result.value?.err?'İşlem reddedildi.':'İşlem zincirde onaylandı.');refresh();
         } else setNotice('Zincir sonucu henüz doğrulanamadı.');
       } catch {setNotice('RPC erişilemiyor.');}
     }}>İşlem sonucunu kontrol et</button>}
-    {latest && !latest.vaults.length && <p>Bağlı cüzdana ait kasa bulunamadı. <Link href="/blockchain">Blockchain bağlantısı</Link></p>}
+    {latest && !latest.vaults.length && <p>Bu ağda bağlı cüzdana ait kasa bulunamadı.</p>}
     {activeVault && <>
       <label>Kasa <select className="adaptive-input" value={activeVault.address} onChange={e=>{setSelected(e.target.value);setAgentFilter('');setReceipts(undefined);}}>
         {latest!.vaults.map(v=><option key={v.address} value={v.address}>Kasa #{v.id}</option>)}
@@ -184,7 +186,7 @@ export default function ChainWorkspace({view}:{view:View}) {
           <button className={button} disabled={!canAct} onClick={()=>void execute((c,user)=>resolveInstruction(c,user,address,r,false))}>Reddet</button>
         </div>}
         <button className={button} onClick={async()=>{
-          try {const rows=await localConnection().getSignaturesForAddress(address,{limit:20});setReceipts({request:address.toBase58(),signatures:rows.filter(x=>!x.err).map(x=>x.signature)});}
+          try {const rows=await chainConnection().getSignaturesForAddress(address,{limit:20});setReceipts({request:address.toBase58(),signatures:rows.filter(x=>!x.err).map(x=>x.signature)});}
           catch {setNotice('İşlem imzaları alınamadı.');}
         }}>Zincir imzalarını göster</button>
         {receipts?.request===address.toBase58() && receipts.signatures.map(s=><code key={s} style={{overflowWrap:'anywhere'}}>{s}</code>)}

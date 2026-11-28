@@ -1,7 +1,7 @@
 import { BN, BorshInstructionCoder, utils } from '@coral-xyz/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { accounts, chainProgram, submitInstruction, PROGRAM_ID, type PaymentAccount } from '../../../../lib/chain-client';
-import { inspectLocalnet, localConnection } from '../../../../lib/agentvault-localnet';
+import { accounts, chainProgram, submitInstruction, type PaymentAccount } from '../../../../lib/chain-client';
+import {chainConnection, chainNetwork, configuredProgramId, inspectChain} from '../../../../lib/chain-network';
 
 export const runtime = 'nodejs';
 
@@ -25,7 +25,7 @@ async function readPayload(request: Request) {
   return Transaction.from(Buffer.from(body.transaction, 'base64'));
 }
 
-async function receiptResponse(c: ReturnType<typeof localConnection>, address: PublicKey, state: PaymentAccount) {
+async function receiptResponse(c: ReturnType<typeof chainConnection>, address: PublicKey, state: PaymentAccount) {
   const receipts = await c.getSignaturesForAddress(address, {limit:20});
   return Response.json({
     requestId: address.toBase58(),
@@ -36,13 +36,13 @@ async function receiptResponse(c: ReturnType<typeof localConnection>, address: P
 }
 
 export async function GET(request: Request) {
-  if (process.env.VAULTGUARD_AGENT_API !== 'localnet') return Response.json({error:'Localnet API disabled.'}, {status:503});
+  if (process.env.VAULTGUARD_AGENT_API !== chainNetwork || !['localnet','devnet'].includes(chainNetwork ?? '')) return Response.json({error:'Agent payment API disabled.'}, {status:503});
   const value = new URL(request.url).searchParams.get('requestId');
   let address: PublicKey;
   try { address = new PublicKey(value ?? ''); }
   catch { return Response.json({error:'Invalid request address.'}, {status:400}); }
   try {
-    const c = localConnection();
+    const c = chainConnection();
     const state = await accounts(c).paymentRequest.fetchNullable(address);
     if (!state) return Response.json({error:'No confirmed receipt yet.'}, {status:404});
     return await receiptResponse(c,address,state);
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (process.env.VAULTGUARD_AGENT_API !== 'localnet') return Response.json({error:'Localnet API disabled.'}, {status:503});
+  if (process.env.VAULTGUARD_AGENT_API !== chainNetwork || !['localnet','devnet'].includes(chainNetwork ?? '')) return Response.json({error:'Agent payment API disabled.'}, {status:503});
   let tx: Transaction;
   try {
     tx = await readPayload(request);
@@ -63,10 +63,10 @@ export async function POST(request: Request) {
 
   const signature = utils.bytes.bs58.encode(tx.signature!);
   try {
-    const c = localConnection();
+    const c = chainConnection();
     const [ix] = tx.instructions;
     const decoded = new BorshInstructionCoder(chainProgram(c).idl).decode(ix.data);
-    if (!ix.programId.equals(PROGRAM_ID) || decoded?.name !== 'submitPayment' || ix.keys.length < 8) return Response.json({error:'Unexpected instruction.'}, {status:400});
+    if (!ix.programId.equals(configuredProgramId()) || decoded?.name !== 'submitPayment' || ix.keys.length < 8) return Response.json({error:'Unexpected instruction.'}, {status:400});
     const {nonce, amount, expiresAt, recipientLabel} = decoded.data as {nonce:BN; amount:BN; expiresAt:BN; recipientLabel:string};
     if (typeof recipientLabel !== 'string' || !recipientLabel.trim() || Buffer.byteLength(recipientLabel) > 64) return Response.json({error:'Recipient label must have 1 to 64 UTF-8 bytes.'}, {status:400});
     const [vault, recipient] = [ix.keys[1].pubkey, ix.keys[7].pubkey];
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     const original = new Transaction({feePayer: tx.feePayer, blockhash: tx.recentBlockhash!, lastValidBlockHeight: 0}).add(expected.instruction);
     if (!original.serializeMessage().equals(tx.serializeMessage())) return Response.json({error:'Payment accounts do not match the signed request.'}, {status:400});
 
-    await inspectLocalnet(c);
+    await inspectChain(c);
     const result = async () => {
       const state = await accounts(c).paymentRequest.fetchNullable(expected.request) as unknown as PaymentAccount | null;
       if (!state) return null;

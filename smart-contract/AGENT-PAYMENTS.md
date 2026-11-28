@@ -18,7 +18,28 @@ Devnet’e geçmeden önce dağıtım yetkisini, hedef program ID’sini ve test
 
 ## Açık doğrulamalar
 
-- Frontend ve sözleşme npm kilit dosyalarında tarama 5 yüksek ve 7 orta düzey bulgu bildirdi. Rapor bazı bulgular için uyumlu yükseltme sunmuyor. Bağımlılık geçişi ayrı doğrulanmalı.
-- Rust bağımlılık denetimi, gerçek Phantom ve Solflare oturumları, yük ve eş zamanlı gönderim ölçümü ile bağımsız sözleşme denetimi açık.
+- Gerçek Phantom ve Solflare oturumları, daha yüksek hacimli yük testi ve bağımsız sözleşme denetimi açık.
 - Bildirimler uygulama içindedir. Ayrı e-posta veya push servisi eklenmedi.
 - Kasa sahibi yetkiyi iptal ettiğinde eski AgentID saklanır ve aynı kayıt yeniden açılamaz. Yeniden kayıt ve anahtar rotasyonu bu değişiklikte ertelendi.
+
+## Devnet ön kontrolü
+
+Agent ekranları ve ödeme API’si için ortam değerleri:
+
+```dotenv
+NEXT_PUBLIC_VAULTGUARD_MODE=chain
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_AGENTVAULT_PROGRAM_ID=<Devnet'te dağıtılmış programın public key'i>
+VAULTGUARD_AGENT_API=devnet
+```
+
+Devnet modu sabit resmî RPC adresini ve beklenen genesis hash’i kullanır. Programın çalıştırılabilir olduğunu ve test USDC mint hesabını doğrular. Localnet test cüzdanları ile Devnet dağıtım yetkisini ayır. Program ilk dağıtımda ekibin kontrol ettiği anahtarla kurulmalı. Yayınlanacak frontend aynı program ID’sini kullanmalı. Program ID’si ve ağ tercihi frontend derleme ortamında verilmelidir.
+
+Ön kontrolde Devnet RPC’ye ulaşıldı. Depoda tanımlı varsayılan program adresi Devnet’te bulunmadı. Repo bağlantısı bir Solana dağıtım cüzdanı veya hosting oturumu sağlamıyor. Gerçek Phantom ve Solflare doğrulaması, ekip cüzdanları ile Devnet dağıtımından sonra yapılmalıdır. Programı Mainnet’e taşımadan önce bağımsız denetim, ekip yetkileri ve üretim mint yapılandırması onaylanmalıdır.
+
+## Bağımlılık ve yük testi sonucu
+
+- Frontend npm taramasında 0 bulgu. Sözleşmenin JavaScript çalışma zamanı için `npm audit --omit=dev` çıktısında 0 bulgu. Tam geliştirme taramasında SPL Token test araçlarına bağlı 3 yüksek düzey kayıt açık. `@solana/spl-token` yalnızca yerel fixture ve testlerde kullanılıyor.
+- RustSec `cargo-audit 0.23.0` taramasında 0 güvenlik açığı. Üç uyarı açık: bakım dışı `bincode 1.3.3` ve `libsecp256k1 0.6.0`, ayrıca `rand 0.7.3` için soundness uyarısı. Bunlar Solana bağımlılıklarıyla birlikte yükseltilmeli.
+- Yerel validator üzerinde `VAULTGUARD_LOAD_COUNT=12` ile yapılan ölçümde 12 eş zamanlı onayın 5'i ödendi, 7'si reddedildi. İlk ölçüm yaklaşık 429 ms sürdü. Ölçüm tek validator ve tek kasa içindir.
+- Localnet ledger yeniden başlatma kontrolünde kesinleşmiş 24 ödeme kaydının adres, durum, ret nedeni ve tutar özeti önceki durumla birebir eşleşti.
