@@ -61,13 +61,13 @@ export async function submitInstruction(c:Connection,key:PublicKey,vault:PublicK
   const instruction=await chainProgram(c).methods.submitPayment(nonce,amount,expiresAt,recipientLabel).accountsStrict({agentSigner:key,vault,agent,guard:guardAddress(vault),request,mint:USDC_MINT,vaultToken:associatedToken(vault),recipient,recipientToken:associatedToken(recipient),tokenProgram:TOKEN_PROGRAM_ID,associatedTokenProgram:ASSOCIATED_TOKEN_PROGRAM_ID,systemProgram:SystemProgram.programId}).instruction();
   return {instruction,request};
 }
-export async function sendOwnerTransaction(owner:PublicKey,instructions:TransactionInstruction[],sign:(tx:Transaction)=>Promise<Transaction>,onSigned:(signature:string)=>void) {
+export async function sendOwnerTransaction(owner:PublicKey,instructions:TransactionInstruction[],sign:(tx:Transaction)=>Promise<Transaction>,onSigned:(signature:string,lastValidBlockHeight:number)=>void) {
   const c=chainConnection();await inspectChain(c);
   const block=await c.getLatestBlockhash('confirmed');
   const tx=new Transaction({feePayer:owner,...block}).add(...instructions);
   const signed=await sign(tx);
   if(!signed.signature||!signed.verifySignatures())throw Error('Cüzdan işlem imzası geçersiz.');
-  const signature=utils.bytes.bs58.encode(signed.signature); onSigned(signature);
+  const signature=utils.bytes.bs58.encode(signed.signature); onSigned(signature,block.lastValidBlockHeight);
   try {
     await c.sendRawTransaction(signed.serialize(),{skipPreflight:false,maxRetries:3});
     const result=await c.confirmTransaction({...block,signature},'confirmed');

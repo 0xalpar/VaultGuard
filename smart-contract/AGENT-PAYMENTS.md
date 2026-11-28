@@ -53,3 +53,11 @@ Devnet modu sabit resmî RPC adresini ve beklenen genesis hash’i kullanır. Pr
 - Yerel yeniden başlatma testi, ağdaki işlemleri kesinleştirdikten sonra `scripts/check-finalized-receipts.cjs --wait-finalized` çıktısını validator aynı kayıt diziniyle açıldıktan sonraki çıktıyla karşılaştırır.
 - Kasa arayüzü entegre edilirken agent acil durdurma için `set_agent_emergency` çağrısını kullan. Bu işlem eski bekleyen taleplerin geçerliliğini sonlandırır ve her agent için yeniden etkinleştirme gerektirir.
 - Bu sonuçlar geliştirme ekibinin doğrulamasıdır. Bağımsız sözleşme denetimi Mainnet öncesinde açık kalır.
+
+## Kasa arayüzü
+
+Zincir modunda **Param** ekranı bağlı cüzdanın kasalarını gösterir. Kasa oluşturma, yatırma ve kendi cüzdanına çekme işlemleri cüzdan imzası ister. Yatırma için cüzdanın test USDC hesabında bakiye gerekir. Çekim, sahibin token hesabı yoksa hesabı aynı işlemde oluşturur. Agent ödemelerinin acil durdurması Güvenliğim ekranındadır.
+
+Son 15 zincir imzası arasından kasa oluşturma, yatırma ve çekme kayıtları gösterilir. Doğrulanmamış imza sekmede kasa sahibi ve ağ bazında saklanır. Yeni kasa işlemi başlatmadan önce sonuç veya blok geçerlilik süresi kontrol edilir.
+
+Yerel validator doğrulamasında kasa oluşturuldu, 7,125001 test USDC yatırıldı ve agent ödemeleri durdurulmuşken 2,125001 test USDC aynı cüzdana çekildi. Kasa 5 test USDC gösterdi. Hareketlerde zincir imzaları doğru sırada okundu. Gerçek Phantom ve Solflare uzantısı testleri ekip kontratını Devnet’e dağıttıktan sonra yapılmalıdır.

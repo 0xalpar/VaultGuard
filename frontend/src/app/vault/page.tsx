@@ -1,4 +1,5 @@
 "use client";
+import ChainVault from "../../components/ChainVault";
 
 import Link from "next/link";
 import { useState, useRef } from "react";
@@ -55,7 +56,7 @@ function formatMoney(cents: number) {
 
 /* MAIN PAGE */
 
-export default function VaultPage() {
+function DemoVaultPage() {
 
   const {
     preferences,
@@ -912,4 +913,8 @@ export default function VaultPage() {
 
     </div>
   );
+}
+
+export default function VaultPage() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainVault/> : <DemoVaultPage/>;
 }

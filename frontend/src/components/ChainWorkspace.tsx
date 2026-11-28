@@ -145,7 +145,7 @@ export default function ChainWorkspace({view}:{view:View}) {
         } else setNotice('Zincir sonucu henüz doğrulanamadı.');
       } catch {setNotice('RPC erişilemiyor.');}
     }}>İşlem sonucunu kontrol et</button>}
-    {latest && !latest.vaults.length && <p>Bu ağda bağlı cüzdana ait kasa bulunamadı.</p>}
+    {latest && !latest.vaults.length && <p>Bu ağda bağlı cüzdana ait kasa bulunamadı. <Link href="/vault">Kasa oluştur</Link></p>}
     {activeVault && <>
       <label>Kasa <select className="adaptive-input" value={activeVault.address} onChange={e=>{setSelected(e.target.value);setAgentFilter('');setReceipts(undefined);}}>
         {latest!.vaults.map(v=><option key={v.address} value={v.address}>Kasa #{v.id}</option>)}
@@ -155,7 +155,8 @@ export default function ChainWorkspace({view}:{view:View}) {
         <p>Kasa bakiyesi {preferences.hideBalance?'••••':activeVault.balance+' test USDC'}</p>
         <p>Etkin agentlar {agents.filter(a=>status(a.account)==='Yetkili').length}</p>
         <Link href="/approvals">Bekleyen ödeme {payments.filter(p=>p.account.status===0).length} · Askıdaki agent {agents.filter(a=>a.account.status===2).length}</Link>
-        <Link href="/transactions">Zincir işlem kayıtları</Link>
+        <Link href="/vault">Kasa ve kasa hareketleri</Link>
+        <Link href="/transactions">Agent ödeme kayıtları</Link>
       </section>}
       {view==='agents' && policyForm()}
       {view==='policies' && <section className="adaptive-card adaptive-stack">
