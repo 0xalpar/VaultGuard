@@ -1,0 +1,52 @@
+name: VaultGuard Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vaultguard-checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend and wallet tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm exec -- tsc --noEmit --incremental false
+      - run: npm run test:policy
+      - name: Verify wallet signatures
+        run: |
+          npm exec -- tsc src/lib/wallet-proof.ts --outDir .wallet-build --module commonjs --target ES2020 --skipLibCheck
+          node --test tests/wallet-proof.test.cjs
+
+  rust:
+    name: Contract Rust unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: smart-contract
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.89.0 --profile minimal
+      - run: cargo +1.89.0 test --locked -p agentvault
