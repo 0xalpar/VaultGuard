@@ -1,10 +1,11 @@
 "use client";
+import ChainWorkspace from "../../components/ChainWorkspace";
 
 import {useState} from 'react';
 import {useDemoVault} from '../../components/DemoVaultProvider';
 import {useAdaptive} from '../../components/AdaptiveProvider';
 
-export default function ApprovalsPage() {
+function ApprovalsPage() {
   const {data, approve, status} = useDemoVault();
   const {preferences} = useAdaptive();
   const [notice, setNotice] = useState('');
@@ -45,7 +46,7 @@ export default function ApprovalsPage() {
       {!suspended.length && <p>Onayınızı bekleyen durdurulmuş asistan yok.</p>}
       {suspended.map(agent => <article key={agent.id} className="adaptive-card-soft adaptive-stack">
         <strong>{data.profiles[agent.id]?.name ?? agent.id}</strong>
-        <p>İlk doğrulanmış kural ihlali nedeniyle durduruldu.</p>
+        <p>Doğrulanmış kural ihlali sınırına ulaştığı için durduruldu.</p>
         <button className="adaptive-button adaptive-button-primary" onClick={() => {
           if (window.confirm('Asistan yeniden etkinleştirilsin mi? Harcama sınırları ve geçmişi korunur.')) {
             status(agent.id, 'active');
@@ -55,4 +56,8 @@ export default function ApprovalsPage() {
       </article>)}
     </section>
   </div>;
+}
+
+export default function Page() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainWorkspace view="approvals"/> : <ApprovalsPage/>;
 }

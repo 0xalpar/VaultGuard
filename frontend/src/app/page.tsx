@@ -1,5 +1,6 @@
 
 "use client";
+import ChainWorkspace from "../components/ChainWorkspace";
 
 import Link from "next/link";
 import {useDemoVault} from "../components/DemoVaultProvider";
@@ -71,7 +72,7 @@ function formatMoney(value: number) {
 
 /* MAIN HOME PAGE */
 
-export default function HomePage() {
+function HomePage() {
   const {
     preferences,
     setHideBalance,
@@ -889,4 +890,8 @@ export default function HomePage() {
 
     </div>
   );
+}
+
+export default function Page() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainWorkspace view="home"/> : <HomePage/>;
 }

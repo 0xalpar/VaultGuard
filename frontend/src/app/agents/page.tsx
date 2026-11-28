@@ -1,5 +1,6 @@
 
 "use client";
+import ChainWorkspace from "../../components/ChainWorkspace";
 
 import { useState, useRef } from "react";
 
@@ -43,7 +44,7 @@ import "./adaptive-agents.css";
 
 const MAX_AGENTS = 6;
 
-export default function AgentsPage() {
+function AgentsPage() {
   const { preferences } = useAdaptive();
 
   const {data,day,saveAgent:storeAgent,status,reset}=useDemoVault();
@@ -429,7 +430,7 @@ export default function AgentsPage() {
 
               <p className="adaptive-small" style={{overflowWrap:"anywhere"}}>AgentID: {agent.id}</p>
               <p className="adaptive-small" style={{overflowWrap:"anywhere"}}>Örnek imzacı: {agent.publicKey}</p>
-              <p className={agent.violations>=1?"adaptive-status adaptive-status-danger":"adaptive-small"}>Yetki ihlalleri: {agent.violations}/1 · Gerçek imza doğrulanmıyor</p>
+              <p className={agent.violations>=5?"adaptive-status adaptive-status-danger":"adaptive-small"}>Yetki ihlalleri: {agent.violations}/5 · Gerçek imza doğrulanmıyor</p>
               <div className="adaptive-divider" />
               {/* DAILY SPENDING */}
 
@@ -676,4 +677,8 @@ export default function AgentsPage() {
       </section>
     </div>
   );
+}
+
+export default function Page() {
+  return process.env.NEXT_PUBLIC_VAULTGUARD_MODE === "chain" ? <ChainWorkspace view="agents"/> : <AgentsPage/>;
 }

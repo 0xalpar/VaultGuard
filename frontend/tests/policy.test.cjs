@@ -12,7 +12,7 @@ test('denylist overrides allowlist; blank allowlist requires approval',()=>{asse
 test('positive amounts and maximum',()=>{assert.equal(run(fresh(),req({amount:u('0.000001')}),'demo-key-a',now).entry.decision,'approved');assert.equal(run(fresh(),req({amount:0}),'demo-key-a',now).entry.reason,'INVALID_REQUEST');assert.equal(run(fresh(),req({amount:u('26')}),'demo-key-a',now).entry.reason,'ABOVE_MAXIMUM');});
 test('daily and lifetime limits',()=>{let s=run(fresh(),req({amount:u('25')}),'demo-key-a',now).state;assert.equal(run(s,req({amount:u('20'),nonce:2}),'demo-key-a',now).entry.reason,'DAILY_LIMIT');s.agents[0].totalSpent=u('55');assert.equal(run(s,req({nonce:2}),'demo-key-a',now).entry.reason,'TOTAL_LIMIT');});
 test('Calendar day rollover preserves total',()=>{let s=run(fresh(),req({amount:u('25')}),'demo-key-a',now).state;const r=run(s,req({amount:u('20'),nonce:2}),'demo-key-a',now+86400000);assert.equal(r.entry.decision,'approved');assert.equal(r.state.agents[0].dailySpent,u('20'));assert.equal(r.state.agents[0].totalSpent,u('45'));});
-test('first authenticated policy violation suspends; resume resets violations not spend',()=>{let s=fresh();for(let i=1;i<=1;i++){s=run(s,req({amount:u('30'),nonce:i}),'demo-key-a',now).state;}assert.equal(s.agents[0].status,'suspended');assert.equal(s.balance,u('100'));assert.equal(s.logs.length,1);assert.equal(run(s,req({nonce:6}),'demo-key-a',now).entry.reason,'AGENT_INACTIVE');s=setDemoAgentStatus(s,'a','active');assert.equal(s.agents[0].violations,0);assert.equal(s.agents[0].lastNonce,1);assert.equal(run(s,req({nonce:6}),'demo-key-a',now).entry.decision,'approved');});
+test('fifth authenticated policy violation suspends; resume resets violations not spend',()=>{let s=fresh();for(let i=1;i<=5;i++){s=run(s,req({amount:u('30'),nonce:i}),'demo-key-a',now).state;}assert.equal(s.agents[0].status,'suspended');assert.equal(s.balance,u('100'));assert.equal(s.logs.length,5);assert.equal(run(s,req({nonce:6}),'demo-key-a',now).entry.reason,'AGENT_INACTIVE');s=setDemoAgentStatus(s,'a','active');assert.equal(s.agents[0].violations,0);assert.equal(s.agents[0].lastNonce,5);assert.equal(run(s,req({nonce:6}),'demo-key-a',now).entry.decision,'approved');});
 test('freeze and revocation',()=>{const s=setDemoFrozen(fresh(),true);assert.equal(run(s,req(),'demo-key-a',now).entry.reason,'VAULT_FROZEN');assert.equal(demoWithdraw(s,u('1'),now).balance,u('99'));const revoked=setDemoAgentStatus(fresh(),'a','revoked');assert.equal(setDemoAgentStatus(revoked,'a','active').agents[0].status,'revoked');assert.equal(run(revoked,req(),'demo-key-a',now).entry.reason,'AGENT_INACTIVE');});
 test('replay and expiry',()=>{const s=run(fresh(),req(),'demo-key-a',now).state;assert.equal(run(s,req(),'demo-key-a',now).entry.reason,'REPLAY');assert.equal(run(s,req({nonce:2,expiresAt:now}),'demo-key-a',now).entry.reason,'EXPIRED');});
 test('insufficient balance and owner demo operations',()=>{const s=demoWithdraw(fresh(),u('95'),now);assert.equal(run(s,req(),'demo-key-a',now).entry.reason,'INSUFFICIENT_BALANCE');assert.equal(demoDeposit(s,u('2'),now).balance,u('7'));});
@@ -54,7 +54,7 @@ test('owner rejection does not penalize agent; approval does not lower nonce wat
  assert.equal(s.agents[0].lastNonce,2);assert.equal(s.balance,u('80'));assert.equal(run(s,req({nonce:2}),'demo-key-a',now+3).entry.reason,'REPLAY');
 });
 test('resume preserves spending, and unfreeze does not reactivate suspended agent',()=>{
- let s=run(fresh(),req(),'demo-key-a',now).state;s=run(s,req({nonce:2,amount:u('30')}),'demo-key-a',now).state;
+ let s=run(fresh(),req(),'demo-key-a',now).state;for(let nonce=2;nonce<=6;nonce++)s=run(s,req({nonce,amount:u('30')}),'demo-key-a',now).state;
  assert.equal(s.agents[0].status,'suspended');s=setDemoFrozen(setDemoFrozen(s,true),false);assert.equal(s.agents[0].status,'suspended');
  s=setDemoAgentStatus(s,'a','active');assert.equal(s.agents[0].violations,0);assert.equal(s.agents[0].dailySpent,u('10'));assert.equal(s.agents[0].totalSpent,u('10'));assert.equal(s.balance,u('90'));
 });
@@ -66,7 +66,7 @@ test('queued approvals share the current daily limit',()=>{
  s=resolveDemoApproval(s,0,true,now+1);
  s=resolveDemoApproval(s,1,true,now+2);
  assert.equal(s.logs[0].decision,'approved');assert.equal(s.logs[1].reason,'DAILY_LIMIT');
- assert.equal(s.balance,u('75'));assert.equal(s.agents[0].dailySpent,u('25'));assert.equal(s.agents[0].status,'suspended');
+ assert.equal(s.balance,u('75'));assert.equal(s.agents[0].dailySpent,u('25'));assert.equal(s.agents[0].status,'active');assert.equal(s.agents[0].violations,1);
 });
 test('saved demo state preserves pending approval and prevents a second execution',()=>{
  let s=run(fresh(),req({recipientWallet:'new-recipient'}),'demo-key-a',now).state;

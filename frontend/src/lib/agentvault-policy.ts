@@ -1,6 +1,6 @@
 /** Browser-independent DEMO reference model. Not a Solana program or an authentication boundary. */
 export const USDC_SCALE = 1_000_000;
-export const MAX_VIOLATIONS = 1;
+export const MAX_VIOLATIONS = 5;
 export type AgentStatus = "active" | "paused" | "suspended" | "revoked";
 export type AgentPolicy = {
   dailyLimit: number;
