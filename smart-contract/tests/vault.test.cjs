@@ -2,7 +2,7 @@ const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const anchor = require('@coral-xyz/anchor');
 const {PublicKey, Keypair, SystemProgram} = require('@solana/web3.js');
-const spl = require('@solana/spl-token');
+const spl = require('./local-token-fixtures.cjs');
 const mint = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
 
 test('Vault PDA lifecycle and authorization (local validator only)', async t => {

@@ -2,7 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const anchor=require('@coral-xyz/anchor');
 const {Keypair, PublicKey, SystemProgram, LAMPORTS_PER_SOL}=require('@solana/web3.js');
-const spl=require('@solana/spl-token');
+const spl=require('./local-token-fixtures.cjs');
 const mint=new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
 const n=x=>new anchor.BN(x);
 
@@ -34,15 +34,15 @@ test('agent payment lifecycle on the isolated local validator', async () => {
   const policy={dailyLimit:n(20_000_000),maxTransfer:n(15_000_000),totalLimit:n(40_000_000),allowlist:[allowed,denied],denylist:[denied]};
   await p.methods.registerAgent(signer.publicKey,policy).accountsStrict({owner,vault,agent,guard,systemProgram:sys}).rpc();
   const expiry=n(Math.floor(Date.now()/1000)+600);
-  const submit=(nonce,amount,recipient)=> {
+  const submit=(nonce,amount,recipient,label='Yerel test alıcısı')=> {
     const request=pda(Buffer.from('request'),pub(agent),le(nonce));
-    const builder=p.methods.submitPayment(n(nonce),n(amount),expiry,'Yerel test alıcısı').accountsStrict({agentSigner:signer.publicKey,vault,agent,request,guard,mint,vaultToken,recipient,recipientToken:ata(recipient),tokenProgram,associatedTokenProgram,systemProgram:sys});
+    const builder=p.methods.submitPayment(n(nonce),n(amount),expiry,label).accountsStrict({agentSigner:signer.publicKey,vault,agent,request,guard,mint,vaultToken,recipient,recipientToken:ata(recipient),tokenProgram,associatedTokenProgram,systemProgram:sys});
     return {request,builder};
   };
   const state=()=>p.account.agentRegistration.fetch(agent);
   const receipt=request=>p.account.paymentRequest.fetch(request);
-  async function send(nonce,amount,recipient) {
-    const {request,builder}=submit(nonce,amount,recipient);
+  async function send(nonce,amount,recipient,label) {
+    const {request,builder}=submit(nonce,amount,recipient,label);
     await builder.signers([signer]).rpc();
     return {request,...await receipt(request)};
   }
@@ -60,7 +60,10 @@ test('agent payment lifecycle on the isolated local validator', async () => {
   await assert.rejects(submit(1,9_000_000,allowed).builder.signers([signer]).rpc());
   assert.equal((await spl.getAccount(c,ata(allowed))).amount,10_000_000n);
 
-  const waiting=await send(2,5_000_000,pending);
+  const label='Onaylandı — alıcı etiketi';
+  const waiting=await send(2,5_000_000,pending,label);
+  assert.equal(waiting.recipientLabel,label);
+  assert.equal(waiting.reason,10);
   assert.equal(waiting.status,0);
   assert.equal((await spl.getAccount(c,ata(pending))).amount,0n);
   assert.equal((await resolve(waiting.request,pending)).status,1);
@@ -131,6 +134,9 @@ test('agent payment lifecycle on the isolated local validator', async () => {
       owner:otherOwner.publicKey,vault:secondVault,agent:agentId,guard:secondGuard,systemProgram:sys,
     }).signers([otherOwner]).rpc();
   }
+  await assert.rejects(p.methods.updateAgentPolicy(policy).accountsStrict({
+    owner:otherOwner.publicKey,vault,agent,guard,
+  }).signers([otherOwner]).rpc(),/ConstraintHasOne/);
   assert.equal((await state()).status,3);
   assert.notEqual(secondAgent.toBase58(),agent.toBase58());
   assert.equal((await p.account.agentRegistration.fetch(secondAgent)).status,0);

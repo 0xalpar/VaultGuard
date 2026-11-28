@@ -262,3 +262,50 @@ pub fn resolve(ctx: Context<ResolvePayment>, approved: bool) -> Result<()> {
 pub struct AgentChanged {pub agent: Pubkey, pub vault: Pubkey, pub status: u8}
 #[event]
 pub struct PaymentDecided {pub request: Pubkey, pub agent: Pubkey, pub status: u8, pub reason: u8}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn policy_applies_at_istanbul_midnight_and_preserves_total_spend() {
+        let recipient = Pubkey::new_unique();
+        let vault = Vault {
+            owner: Pubkey::new_unique(),
+            mint: Pubkey::new_unique(),
+            vault_id: 0,
+            bump: 0,
+            frozen: false,
+        };
+        // 1970-01-02 00:00 in UTC+03.
+        let midnight = 75_600;
+        let mut agent = AgentRegistration {
+            vault: Pubkey::new_unique(),
+            key: Pubkey::new_unique(),
+            status: ACTIVE,
+            bump: 0,
+            epoch: 0,
+            last_nonce: 0,
+            day: 0,
+            daily_spent: 18,
+            total_spent: 28,
+            violations: 0,
+            policy: Policy {
+                daily_limit: 20,
+                max_transfer: 10,
+                total_limit: 35,
+                allowlist: vec![recipient],
+                denylist: vec![],
+            },
+        };
+        let expires = midnight + 60;
+        assert_eq!(decision(&mut agent, &vault, 3, recipient, expires, midnight - 1, 100, true), (REJECTED, 7));
+        assert_eq!(decision(&mut agent, &vault, 8, recipient, expires, midnight, 100, true), (REJECTED, 8));
+        assert_eq!(agent.day, 1);
+        assert_eq!(agent.daily_spent, 0);
+        assert_eq!(agent.total_spent, 28);
+        assert_eq!(decision(&mut agent, &vault, 11, recipient, expires, midnight, 100, true), (REJECTED, 6));
+        assert_eq!(decision(&mut agent, &vault, 7, recipient, expires, midnight, 100, false), (PAID, 0));
+        assert_eq!(decision(&mut agent, &vault, 7, recipient, expires, expires, 100, true), (EXPIRED, 1));
+    }
+}

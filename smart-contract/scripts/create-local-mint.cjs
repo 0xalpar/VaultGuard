@@ -1,7 +1,7 @@
 // Synthetic mint at the Devnet address, ONLY for a disposable local validator.
 const fs = require('node:fs');
 const {PublicKey} = require('@solana/web3.js');
-const {TOKEN_PROGRAM_ID} = require('@solana/spl-token');
+const {TOKEN_PROGRAM_ID} = require('../tests/local-token-fixtures.cjs');
 const mint = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
 const authority = new PublicKey(process.argv[2]);
 const data = Buffer.alloc(82);

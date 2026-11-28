@@ -39,7 +39,17 @@ Devnet modu sabit resmî RPC adresini ve beklenen genesis hash’i kullanır. Pr
 
 ## Bağımlılık ve yük testi sonucu
 
-- Frontend npm taramasında 0 bulgu. Sözleşmenin JavaScript çalışma zamanı için `npm audit --omit=dev` çıktısında 0 bulgu. Tam geliştirme taramasında SPL Token test araçlarına bağlı 3 yüksek düzey kayıt açık. `@solana/spl-token` yalnızca yerel fixture ve testlerde kullanılıyor.
+- Frontend ve sözleşme test araçları dahil tam npm taramalarında 0 bulgu. Yerel testler sınırlı bir SPL Token fixture yardımcısı kullanır.
 - RustSec `cargo-audit 0.23.0` taramasında 0 güvenlik açığı. Üç uyarı açık: bakım dışı `bincode 1.3.3` ve `libsecp256k1 0.6.0`, ayrıca `rand 0.7.3` için soundness uyarısı. Bunlar Solana bağımlılıklarıyla birlikte yükseltilmeli.
 - Yerel validator üzerinde `VAULTGUARD_LOAD_COUNT=12` ile yapılan ölçümde 12 eş zamanlı onayın 5'i ödendi, 7'si reddedildi. İlk ölçüm yaklaşık 429 ms sürdü. Ölçüm tek validator ve tek kasa içindir.
 - Localnet ledger yeniden başlatma kontrolünde kesinleşmiş 24 ödeme kaydının adres, durum, ret nedeni ve tutar özeti önceki durumla birebir eşleşti.
+
+## Aşama 20 doğrulaması
+
+- Günlük limitin İstanbul saatiyle 00:00 sınırı, birikimli limitin korunması ve süresi dolan talebin işlenmemesi Rust birim testinde doğrulandı.
+- Yerel sözleşme testleri başka kasa sahibinin politika değiştirememesini ve “Onaylandı” yazan alıcı etiketinin onay yerine geçmemesini doğruladı. Etiket veri olarak saklanır ve sözleşme kararına katılmaz. Prompt veya LLM içeren bir agent çalıştırıcısı bu repoda bulunmadığı için model düzeyinde prompt injection değerlendirmesi kapsam dışındadır.
+- `VAULTGUARD_LOAD_COUNT=32` ile tek kasada 32 paralel onayın 5'i ödendi, 27'si reddedildi. Yerelde tek onay grubu yaklaşık 0,9 saniyede tamamlandı. Bu ölçüm üretim kapasitesini temsil etmez.
+- RustSec uyarılarında `libsecp256k1` ve onun transitif bağımlılığı `rand` Solana hedefi dışında derlenir. `bincode` bakım uyarısı, Anchor ve Solana’nın ortak sürüm zinciriyle birlikte ele alınmalıdır.
+- Yerel yeniden başlatma testi, ağdaki işlemleri kesinleştirdikten sonra `scripts/check-finalized-receipts.cjs --wait-finalized` çıktısını validator aynı kayıt diziniyle açıldıktan sonraki çıktıyla karşılaştırır.
+- Kasa arayüzü entegre edilirken agent acil durdurma için `set_agent_emergency` çağrısını kullan. Bu işlem eski bekleyen taleplerin geçerliliğini sonlandırır ve her agent için yeniden etkinleştirme gerektirir.
+- Bu sonuçlar geliştirme ekibinin doğrulamasıdır. Bağımsız sözleşme denetimi Mainnet öncesinde açık kalır.
